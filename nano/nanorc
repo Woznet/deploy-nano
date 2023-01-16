@@ -325,4 +325,6 @@ set wordbounds
 #bind ^L linter execute
 #bind ^E execute main
 
+## === Syntax coloring ===
+
 
