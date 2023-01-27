@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# sudo apt install -y git-all clang groff groff-base ffmpeg xdg-utils ffmpeg-doc ffmpeg ncurses-doc libncurses-dev g++-multilib libc6 libc6-dev gcc-multilib libc++-dev build-essential libbsd-dev libc-dev pkg-config libncurses5-dev libncursesw5-dev zlib1g-dev libc-ares-dev libev-dev libcairo2-dev libcairo2-doc freetype2-doc libgirepository1.0-dev libglib2.0-doc libxml2-utils libice-doc libsm-doc libx11-doc libxcb-doc libxext-doc devhelp devhelp-common libmagic1 libmagic-dev libmagick++-dev libmagics++-dev gettext gettext-doc autopoint  libasprintf-dev libgettextpo-dev language-pack-en language-pack-en-base glibc-doc glibc-doc-reference glibc-source
 
 if [[ $(which nano) ]] ; then
   sudo apt remove -y nano > /dev/null
@@ -34,7 +33,7 @@ make install > /tmp/nano-makeinstall.log &&
     install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-7.2
 
 cp /etc/nanorc /etc/nanorc.bak > /dev/null
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/nanorc | tee /etc/nanorc > /dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/nanorc | tee /etc/nanorc > /dev/null
 
 mv --force $(cat /tmp/nanosyntaxpath.tmp)/*.nanorc /usr/share/nano/ > /dev/null
 chmod --changes =644 /usr/share/nano/*.nanorc
