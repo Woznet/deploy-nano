@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 sudo apt install -y git-all clang groff groff-base ffmpeg xdg-utils ffmpeg-doc ffmpeg ncurses-doc libncurses-dev g++-multilib libc6 libc6-dev gcc-multilib libc++-dev build-essential libbsd-dev libc-dev pkg-config libncurses5-dev libncursesw5-dev zlib1g-dev libc-ares-dev libev-dev libcairo2-dev libcairo2-doc freetype2-doc libgirepository1.0-dev libglib2.0-doc libxml2-utils libice-doc libsm-doc libx11-doc libxcb-doc libxext-doc devhelp devhelp-common libmagic1 libmagic-dev libmagick++-dev libmagics++-dev
 
