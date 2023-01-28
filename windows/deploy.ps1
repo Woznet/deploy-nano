@@ -16,59 +16,16 @@ New-Item -ItemType SymbolicLink  -Path "$NanoSyntaxDir/html.j2.nanorc" -Value "$
 New-Item -ItemType SymbolicLink  -Path "$NanoSyntaxDir/twig.nanorc" -Value "$NanoSyntaxDir/html.nanorc" -Force
 New-Item -ItemType SymbolicLink  -Path "$NanoSyntaxDir/zshrc.nanorc" -Value "$NanoSyntaxDir/zsh.nanorc" -Force
 
-# Load AngleSharp.dll
-try {
-  switch ($PSVersionTable.PSEdition) {
-    'Core' {
-      $null = [System.Reflection.Assembly]::LoadFile((Join-Path -Path $PSScriptRoot -ChildPath 'lib\Core\AngleSharp.dll' -Resolve))
-    }
-    'Desktop' {
-      $null = [System.Reflection.Assembly]::LoadFile((Join-Path -Path $PSScriptRoot -ChildPath 'lib\Desktop\System.Text.Encoding.CodePages.dll' -Resolve))
-      $null = [System.Reflection.Assembly]::LoadFile((Join-Path -Path $PSScriptRoot -ChildPath 'lib\Desktop\AngleSharp.dll' -Resolve))
-    }
-    default { throw 'Something went wrong!' }
-  }
-}
-catch {
-  [System.Management.Automation.ErrorRecord]$e = $_
-  [PSCustomObject]@{
-    Type      = $e.Exception.GetType().FullName
-    Exception = $e.Exception.Message
-    Reason    = $e.CategoryInfo.Reason
-    Target    = $e.CategoryInfo.TargetName
-    Script    = $e.InvocationInfo.ScriptName
-    Line      = $e.InvocationInfo.ScriptLineNumber
-    Column    = $e.InvocationInfo.OffsetInLine
-  }
-  throw $_
-}
+# Find nano-win latest release
+$BaseUrl = 'https://files.lhmouse.com/nano-win/'
+$IRM = Invoke-RestMethod -Uri $BaseUrl
+$NanoFile = ($IRM.Split('><') | ? {$_ -like '*"nano-win*v7*.7z"*'})[0].Split(' ')[1].Split('"')[1]
 
-# Download latest nano-win version
-try {
-  $Content = (Invoke-WebRequest -Uri 'https://files.lhmouse.com/nano-win/').Content
-  $HTMLParser = [AngleSharp.Html.Parser.HtmlParser]::new()
-  $ParsedDocument = $HTMLParser.ParseDocument($Content)
-  $Link = $ParsedDocument.Links.PathName -match 'nano-win*' | Select-Object -First 1
-
-  $NWurl = Join-Url -Base https://files.lhmouse.com/nano-win/ -Child $Link.TrimStart('/')
-  $NWSavePath = Join-Path -Path $env:TEMP -ChildPath (Split-Path -Path $NWurl -Leaf)
-  $WC = [System.Net.WebClient]::new()
-  $WC.DownloadFile($NWurl, $NWSavePath)
-  $WC.Dispose()
-}
-catch {
-  [System.Management.Automation.ErrorRecord]$e = $_
-  [PSCustomObject]@{
-    Type      = $e.Exception.GetType().FullName
-    Exception = $e.Exception.Message
-    Reason    = $e.CategoryInfo.Reason
-    Target    = $e.CategoryInfo.TargetName
-    Script    = $e.InvocationInfo.ScriptName
-    Line      = $e.InvocationInfo.ScriptLineNumber
-    Column    = $e.InvocationInfo.OffsetInLine
-  }
-  throw $_
-}
+$NWurl = Join-Url -Base $BaseUrl -Child $NanoFile
+$NWSavePath = Join-Path -Path $env:TEMP -ChildPath $NanoFile
+$WC = [System.Net.WebClient]::new()
+$WC.DownloadFile($NWurl, $NWSavePath)
+$WC.Dispose()
 
 # extract 7z archive
 $TMPNanowin = Join-Path -Path $env:TEMP -ChildPath 'nano-win'
