@@ -77,7 +77,7 @@ $TMPNanowin = Join-Path -Path $env:TEMP -ChildPath 'nano-win'
 $NanoExe = Join-Path -Path $TMPNanowin -ChildPath 'pkg_x86_64-w64-mingw32\bin\nano.exe' -Resolve
 Get-Item -Path $NanoExe | Copy-Item -Destination 'C:\ProgramData\nano-win'
 # save nanorc file to ProgramData folder
-Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/windows/nano/nanorc' | Out-File -FilePath C:\ProgramData\nanorc
+Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/windows/nanorc' | Out-File -FilePath C:\ProgramData\nanorc
 # Add nano.exe directory to PATH
 Add-EnvPath -VariableTarget Machine -Path 'C:\ProgramData\nano-win'
 # refresh powershell environment
