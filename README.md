@@ -6,6 +6,11 @@
 - build [nano-7.2][4]
 - add [nanorc syntax][1]
 
+### Run all parts for Ubuntu systems - [start.sh][5]
+```sh
+curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/start.sh | bash
+```
+
 ***
 
 ## **Windows**
@@ -30,3 +35,6 @@
 [2]: https://github.com/lhmouse/nano-win
 [3]: https://files.lhmouse.com/nano-win/
 [4]: https://www.nano-editor.org/dist/latest/nano-7.2.tar.xz
+[5]: https://github.com/Woznet/deploy-nano-win/blob/main/ubuntu/start.sh
+
+
