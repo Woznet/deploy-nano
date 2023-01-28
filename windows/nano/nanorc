@@ -326,4 +326,4 @@ set wordbounds
 #bind ^E execute main
 
 ## === Syntax coloring ===
-include "C:/ProgramData/nano-win/nanorc-syntax/*.nanorc"
+include "C:/ProgramData/nano-win/nano-syntax/*.nanorc"
