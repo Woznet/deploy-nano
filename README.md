@@ -6,7 +6,7 @@
 - build [nano-7.2][4]
 - add [nanorc syntax][1]
 
-### Run all parts for Ubuntu systems - [start.sh][5]
+### Run all parts for Ubuntu - [start.sh][5]
 ```sh
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/start.sh | bash
 ```
@@ -16,6 +16,11 @@ curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/st
 ## **Windows**
 - download [nano-win][2]
 - add [nanorc syntax][1]
+
+### Run for Windows - [deploy.ps1][9]
+```powershell
+Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/windows/deploy.ps1'))
+```
 
 ---
 
@@ -39,5 +44,5 @@ curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/st
 [6]: https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu
 [7]: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian-ubuntu-linux-raspberry-pi-os-apt
 [8]: https://github.com/nvm-sh/nvm
-
+[9]: https://github.com/Woznet/deploy-nano-win/blob/main/windows/deploy.ps1
 
