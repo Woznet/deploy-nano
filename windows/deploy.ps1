@@ -4,6 +4,10 @@
     This script will 
     - deploy nanorc syntax files located - https://github.com/galenguyer/nano-syntax-highlighting
     - install latest version of nano-win
+    
+    Join-Url and Add-EnvPath - are from WozTools - https://github.com/Woznet/WozTools
+    Update-SessionEnvironment - is part of chocolatey - 
+    https://github.com/chocolatey/choco/blob/develop/src/chocolatey.resources/helpers/functions/Update-SessionEnvironment.ps1
 #>
 
 ### Download nano syntax files
