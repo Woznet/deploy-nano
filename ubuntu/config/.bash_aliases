@@ -1,19 +1,23 @@
-# Aliases
+# Aliases 
 
 alias sudo='sudo '
-alias ls='ls --color=always --group-directories-first'
-alias ll='ls -alF'
+
+alias ll='ls --size -C --human-readable --group-directories-first --color=always --almost-all -l -F'
+#alias ll='ls -alF'
+
+
+
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias la='ls -A'
-alias l='ls -CF'
 
-alias chown='chown --changes'
-alias chmod='chmod --changes'
-alias rm='rm --verbose'
-alias cp='cp --verbose'
-alias mv='mv --verbose'
+alias chmodx='chmod -v +x'
+alias chown='chown -v'
+alias chmod='chmod -v'
+
+alias rm='rm -v'
+alias cp='cp -v'
+alias mv='mv -v'
 
 
 # alias dir='dir --color=auto'
