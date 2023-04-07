@@ -11,9 +11,17 @@ git clone https://github.com/galenguyer/nano-syntax-highlighting.git
 readlink -f ./nano-syntax-highlighting > /tmp/nanosyntaxpath.tmp
 
 cd ~/temp
-wget https://www.nano-editor.org/dist/v7/nano-7.2.tar.xz
-tar -xf nano-7.2.tar.xz
-cd nano-7.2
+
+# wget https://www.nano-editor.org/dist/v7/nano-7.2.tar.xz
+# tar -xf nano-7.2.tar.xz
+# cd nano-7.2
+
+git clone https://git.savannah.gnu.org/git/nano.git
+cd nano
+tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+git checkout $tag -b latest
+
+
 readlink -f . > /tmp/nanobuildpath.tmp
 
 ./configure --prefix=/usr        \
