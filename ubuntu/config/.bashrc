@@ -117,18 +117,17 @@ fi
 #-+-#-+-#-+-#-+-#
 # custom function for tldr bash completion import
 concatenate_paths() {
-    base_path=${1}
-    sub_path=${2}
-    full_path="${base_path:+$base_path/}$sub_path"
-    full_path=$(realpath ${full_path})
-#-+-#-+-#-+-#-+-#
+  base_path=${1}
+  sub_path=${2}
+  full_path="${base_path:+$base_path/}$sub_path"
+  full_path=$(realpath ${full_path})
 }
 #-+-#-+-#-+-#-+-#
 
 if [ $EUID == 0 ]; then
-        export PS1="\[\033[38;5;160m\]\u\[\033[38;5;32m\]@\[\033[38;5;112m\]\h\[\033[38;5;32m\]:\[\033[38;5;166m\]\w \[\033[38;5;32m\]\$ \[\033[0m\]"
+  export PS1="\[\033[38;5;160m\]\u\[\033[38;5;32m\]@\[\033[38;5;112m\]\h\[\033[38;5;32m\]:\[\033[38;5;166m\]\w \[\033[38;5;32m\]\$ \[\033[0m\]"
 else
-        export PS1="\[\033[38;5;214m\]\u\[\033[38;5;32m\]@\[\033[38;5;112m\]\h\[\033[38;5;32m\]:\[\033[38;5;166m\]\w \[\033[38;5;32m\]\$ \[\033[0m\]"
+  export PS1="\[\033[38;5;214m\]\u\[\033[38;5;32m\]@\[\033[38;5;112m\]\h\[\033[38;5;32m\]:\[\033[38;5;166m\]\w \[\033[38;5;32m\]\$ \[\033[0m\]"
 fi
 
 #-+-#-+-#-+-#-+-#
@@ -140,25 +139,25 @@ fi
 
 
 if [[ $(which nvm) ]] ; then
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
 
 ## loads npm bash completion
 if [[ $(which tldr) ]] ; then
-## loads tldr bash completion - alt method - handles npm version updates
-    source $(concatenate_paths $(dirname $(which tldr)) '../lib/node_modules/tldr/bin/completion/bash/tldr')
+  ## loads tldr bash completion - alt method - handles npm version updates
+  source $(concatenate_paths $(dirname $(which tldr)) '../lib/node_modules/tldr/bin/completion/bash/tldr')
 fi
 
 
 ## loads gh bash completion
 if [[ $(which gh) ]] ; then
-source <(gh completion --shell bash)
+  source <(gh completion --shell bash)
 fi
 
 if [[ $(which aws) ]] ; then
-complete -C '/usr/local/bin/aws_completer' aws
+  complete -C '/usr/local/bin/aws_completer' aws
 fi
 
 # mountpoint -q /mnt/u || sudo mount -t drvfs U: /mnt/u -o uid=$(id -u),gid=$(id -g)
@@ -169,12 +168,12 @@ fi
 
 ### Add ~/.local/bin to PATH for pip/python
 if [ -d "$HOME/.local/bin" ] ; then
-    export PATH="$PATH:$HOME/.local/bin"
+  export PATH="$PATH:$HOME/.local/bin"
 fi
 
 ### Add ~/bin to PATH for dev
 if [ -d "$HOME/bin" ] ; then
-    export PATH="$PATH:$HOME/bin"
+  export PATH="$PATH:$HOME/bin"
 fi
 
 
