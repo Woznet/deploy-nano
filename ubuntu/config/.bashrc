@@ -144,7 +144,14 @@ if [[ -d "$HOME/.nvm" ]] ; then
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
 
+
+
+
 ## loads npm bash completion
+if [[ $(which npm) ]] ; then
+  source <(npm completion)
+fi
+
 if [[ $(which tldr) ]] ; then
   ## loads tldr bash completion - alt method - handles npm version updates
   source $(concatenate_paths $(dirname $(which tldr)) '../lib/node_modules/tldr/bin/completion/bash/tldr')
