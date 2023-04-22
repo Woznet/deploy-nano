@@ -174,14 +174,17 @@ fi
 
 
 ### Add ~/.local/bin to PATH for pip/python
-if [ -d "$HOME/.local/bin" ] ; then
-  export PATH="$PATH:$HOME/.local/bin"
-fi
+### Add ~/bin to PATH for dev
+export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
+
+# if [ -d "$HOME/.local/bin" ] ; then
+#   export PATH="$PATH:$HOME/.local/bin"
+# fi
 
 ### Add ~/bin to PATH for dev
-if [ -d "$HOME/bin" ] ; then
-  export PATH="$PATH:$HOME/bin"
-fi
+# if [ -d "$HOME/bin" ] ; then
+#   export PATH="$PATH:$HOME/bin"
+# fi
 
 
 # GUI Support - XMing
