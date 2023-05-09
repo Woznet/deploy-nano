@@ -57,7 +57,6 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 
-
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
@@ -81,11 +80,6 @@ fi
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# some more ls aliases
-# alias ll='ls -alF'
-# alias la='ls -A'
-# alias l='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -132,8 +126,8 @@ fi
 
 #-+-#-+-#-+-#-+-#
 if [[ $(which most) ]] ; then
-# Color man pages
-export PAGER="most"
+  # Color man pages
+  export PAGER="most"
 fi
     
 
@@ -147,18 +141,18 @@ fi
 
 
 
-## loads npm bash completion
+## npm bash completion
 if [[ $(which npm) ]] ; then
   source <(npm completion)
 fi
 
 if [[ $(which tldr) ]] ; then
-  ## loads tldr bash completion - alt method - handles npm version updates
+  ## tldr bash completion - alt method - handles npm version updates
   source $(concatenate_paths $(dirname $(which tldr)) '../lib/node_modules/tldr/bin/completion/bash/tldr')
 fi
 
 
-## loads gh bash completion
+## gh bash completion
 if [[ $(which gh) ]] ; then
   source <(gh completion --shell bash)
 fi
@@ -173,18 +167,10 @@ fi
 
 
 
-### Add ~/.local/bin to PATH for pip/python
-### Add ~/bin to PATH for dev
+### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
 export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 
-# if [ -d "$HOME/.local/bin" ] ; then
-#   export PATH="$PATH:$HOME/.local/bin"
-# fi
-
-### Add ~/bin to PATH for dev
-# if [ -d "$HOME/bin" ] ; then
-#   export PATH="$PATH:$HOME/bin"
-# fi
+#-+-#-+-#-+-#-+-#
 
 
 # GUI Support - XMing
