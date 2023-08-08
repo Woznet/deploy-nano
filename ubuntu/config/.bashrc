@@ -109,13 +109,13 @@ fi
 
 
 #-+-#-+-#-+-#-+-#
-# custom function for tldr bash completion import
-concatenate_paths() {
-  base_path=${1}
-  sub_path=${2}
-  full_path="${base_path:+$base_path/}$sub_path"
-  full_path=$(realpath ${full_path})
-}
+# # custom function for tldr bash completion import
+# concatenate_paths() {
+#   base_path=${1}
+#   sub_path=${2}
+#   full_path="${base_path:+$base_path/}$sub_path"
+#   full_path=$(realpath ${full_path})
+# }
 #-+-#-+-#-+-#-+-#
 
 if [ $EUID == 0 ]; then
@@ -147,8 +147,14 @@ if [[ $(which npm) ]] ; then
 fi
 
 if [[ $(which tldr) ]] ; then
+
+concat_paths() {
+  echo "${1}/${2}"
+}
+
   ## tldr bash completion - alt method - handles npm version updates
-  source $(concatenate_paths $(dirname $(which tldr)) '../lib/node_modules/tldr/bin/completion/bash/tldr')
+  # source $(concatenate_paths $(dirname $(which tldr)) './lib/node_modules/tldr/bin/completion/bash/tldr')
+  source $(concat_paths $(dirname $(realpath $(which tldr))) 'completion/bash/tldr')
 fi
 
 
