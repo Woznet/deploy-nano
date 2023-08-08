@@ -179,6 +179,6 @@ export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 # verify history cmd before executing
 shopt -s histverify
 
-
+#-+-#-+-#-+-#-+-#
 
 
