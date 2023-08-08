@@ -176,5 +176,6 @@ export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 # GUI Support - XMing
 # export DISPLAY="$(tail -1 /etc/resolv.conf | cut -d' ' -f2):0.0"
 
-
+# verify history cmd before executing
+shopt -s histverify
 
