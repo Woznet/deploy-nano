@@ -4,8 +4,8 @@
 
 # If not running interactively, don't do anything
 case $- in
-    *i*) ;;
-      *) return;;
+*i*) ;;
+*) return ;;
 esac
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -32,13 +32,13 @@ shopt -s checkwinsize
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+  debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-		esac
+xterm-color | *-256color) color_prompt=yes ;;
+esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
@@ -46,36 +46,34 @@ case "$TERM" in
 force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
 fi
-
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
+xterm* | rxvt*)
+  PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+  ;;
+*) ;;
 esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+  alias dir='dir --color=auto'
+  alias vdir='vdir --color=auto'
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
 fi
 
 # colored GCC warnings and errors
@@ -91,7 +89,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+  . ~/.bash_aliases
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -104,9 +102,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-
-
 
 #-+-#-+-#-+-#-+-#
 # # custom function for tldr bash completion import
@@ -125,59 +120,55 @@ else
 fi
 
 #-+-#-+-#-+-#-+-#
-if [[ $(which most) ]] ; then
+if [[ $(which most) ]]; then
   # Color man pages
   export PAGER="most"
 fi
-    
 
-
-if [[ -d "$HOME/.nvm" ]] ; then
+if [[ -d "$HOME/.nvm" ]]; then
   export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+  ## npm bash completion
+  if [[ $(which npm) ]]; then
+    source <(npm completion)
+  fi
+
+  if [[ $(which tldr) ]]; then
+
+    concat_paths() {
+      echo "${1}/${2}"
+    }
+
+    ## tldr bash completion - alt method - handles npm version updates
+    # source $(concatenate_paths $(dirname $(which tldr)) './lib/node_modules/tldr/bin/completion/bash/tldr')
+    source $(concat_paths $(dirname $(realpath $(which tldr))) 'completion/bash/tldr')
+  fi
+
 fi
-
-
-
-
-## npm bash completion
-if [[ $(which npm) ]] ; then
-  source <(npm completion)
-fi
-
-if [[ $(which tldr) ]] ; then
-
-concat_paths() {
-  echo "${1}/${2}"
-}
-
-  ## tldr bash completion - alt method - handles npm version updates
-  # source $(concatenate_paths $(dirname $(which tldr)) './lib/node_modules/tldr/bin/completion/bash/tldr')
-  source $(concat_paths $(dirname $(realpath $(which tldr))) 'completion/bash/tldr')
-fi
-
 
 ## gh bash completion
-if [[ $(which gh) ]] ; then
+if [[ $(which gh) ]]; then
   source <(gh completion --shell bash)
 fi
 
-if [[ $(which aws) ]] ; then
+if [[ $(which aws) ]]; then
   complete -C '/usr/local/bin/aws_completer' aws
+fi
+
+if [[ $(which op) ]]; then
+  source <(op completion bash)
 fi
 
 # mountpoint -q /mnt/u || sudo mount -t drvfs U: /mnt/u -o uid=$(id -u),gid=$(id -g)
 # mountpoint -q /mnt/v || sudo mount -t drvfs V: /mnt/v -o uid=$(id -u),gid=$(id -g)
 #-+-#-+-#-+-#-+-#
 
-
-
 ### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
 export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 
 #-+-#-+-#-+-#-+-#
-
 
 # GUI Support - XMing
 # export DISPLAY="$(tail -1 /etc/resolv.conf | cut -d' ' -f2):0.0"
@@ -186,5 +177,3 @@ export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 shopt -s histverify
 
 #-+-#-+-#-+-#-+-#
-
-
