@@ -39,12 +39,13 @@ fi
 
 # install node
 if [[ ! $(which node) ]]; then
-    nvm install node
+    # nvm install node
+    nvm install --lts
 fi
 
 # install npm
 if [[ ! $(which npm) ]]; then
-    nvm install-latest-npm
+    # nvm install-latest-npm
 fi
 
 # install tldr
