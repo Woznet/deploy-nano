@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# update software
+sudo apt update
+
 # install software
 sudo apt install -y apt-transport-https curl software-properties-common wget xdg-utils git-all \
     autopoint build-essential clang devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib \
