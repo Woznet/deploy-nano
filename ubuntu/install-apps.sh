@@ -53,4 +53,5 @@ if [[ ! $(which npm) ]]; then
 fi
 
 # start build-nano.sh script
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/build-nano.sh | bash
+curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/build-nano.sh | bash
+

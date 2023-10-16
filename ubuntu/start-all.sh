@@ -6,22 +6,22 @@ if [[ ! $(which curl) ]]; then
 fi
 
 # config bashrc and aliases
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/.bashrc | tee ~/.bashrc >/dev/null
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/.bash_aliases | tee ~/.bash_aliases >/dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bashrc | tee ~/.bashrc >/dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bash_aliases | tee ~/.bash_aliases >/dev/null
 
 # link user bashrc and aliases to root
 sudo ln ~/.bashrc /root/.bashrc
 sudo ln ~/.bash_aliases /root/.bash_aliases
 
 # config sudoers and inputrc
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/sudoers.woz | sudo tee /etc/sudoers.d/woz >/dev/null
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/inputrc | sudo tee /etc/inputrc >/dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/sudoers.woz | sudo tee /etc/sudoers.d/woz >/dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/inputrc | sudo tee /etc/inputrc >/dev/null
 
 # create user directories
 mkdir -v ~/{git,temp}
 
 # start install-apps.sh script
-# curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/install-apps.sh | bash
+# curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/install-apps.sh | bash
 
 # install software
 sudo apt install -y apt-transport-https curl software-properties-common wget xdg-utils git-all autopoint build-essential clang devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib gettext gettext-doc glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev ffmpeg ffmpeg-doc
@@ -63,7 +63,7 @@ if [[ ! $(which npm) ]]; then
 fi
 
 # start build-nano.sh script
-# curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/build-nano.sh | bash
+# curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/build-nano.sh | bash
 
 if [[ $(which nano) ]]; then
     sudo apt remove -y nano >/dev/null
@@ -103,10 +103,11 @@ make install >/tmp/nano-makeinstall.log &&
     install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-7.2
 
 cp /etc/nanorc /etc/nanorc.bak >/dev/null
-curl https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null
+curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null
 
 mv --force $(cat /tmp/nanosyntaxpath.tmp)/*.nanorc /usr/share/nano/ >/dev/null
 chmod --changes =644 /usr/share/nano/*.nanorc
 chown --changes --recursive root:root /usr/share/nano/
 
 rm -v /tmp/*.tmp
+

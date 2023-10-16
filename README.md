@@ -8,7 +8,7 @@
 
 ### Run all parts for Ubuntu - [start.sh][5]
 ```sh
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/start.sh | bash
+curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/start.sh | bash
 ```
 
 ***
@@ -19,7 +19,7 @@ curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/ubuntu/st
 
 ### Run for Windows - [deploy.ps1][9]
 ```powershell
-Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.githubusercontent.com/Woznet/deploy-nano-win/main/windows/deploy.ps1'))
+Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.githubusercontent.com/Woznet/deploy-nano/main/windows/deploy.ps1'))
 ```
 
 ---
@@ -40,9 +40,10 @@ Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.git
 [2]: https://github.com/lhmouse/nano-win
 [3]: https://files.lhmouse.com/nano-win/
 [4]: https://www.nano-editor.org/dist/latest/nano-7.2.tar.xz
-[5]: https://github.com/Woznet/deploy-nano-win/blob/main/ubuntu/start.sh
+[5]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/start.sh
 [6]: https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu
 [7]: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian-ubuntu-linux-raspberry-pi-os-apt
 [8]: https://github.com/nvm-sh/nvm
-[9]: https://github.com/Woznet/deploy-nano-win/blob/main/windows/deploy.ps1
+[9]: https://github.com/Woznet/deploy-nano/blob/main/windows/deploy.ps1
+
 
