@@ -3,4 +3,4 @@
 Defaults        timestamp_timeout=90
 Defaults        tty_tickets
 Defaults        insults
-ALL             ALL=NOPASSWD:/usr/bin/apt,/usr/bin/apt-get,/bin/ls,/bin/cat,/usr/bin/tee,/bin/mount
+ALL             ALL=NOPASSWD:/bin/ls,/bin/cat,/usr/bin/tee,/bin/mount
