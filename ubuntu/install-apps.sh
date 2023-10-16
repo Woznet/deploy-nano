@@ -56,6 +56,11 @@ if [[ ! $(which npm) ]]; then
     npm install -g tldr
 fi
 
+# Set clock to 12 hour format
+if [[ $(which gsettings) ]]; then
+    gsettings set org.gnome.desktop.interface clock-format 12h
+fi
+
 # start build-nano.sh script
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/build-nano.sh | bash
 
