@@ -46,10 +46,10 @@ if [[ ! $(which node) ]]; then
     nvm install --lts
 fi
 
-# install npm
-if [[ ! $(which npm) ]]; then
-    # nvm install-latest-npm
-fi
+# install npm - SHOULD BE UNNEEDED BECAUSE OF - nvm install --lts
+# if [[ ! $(which npm) ]]; then
+#     ""
+# fi
 
 # install tldr
 if [[ ! $(which npm) ]]; then
