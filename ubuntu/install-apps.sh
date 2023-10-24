@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# remove rhythmbox
+sudo apt purge -y rhythmbox* aisleriot
+
+
+
 # update software
 sudo apt update
 
