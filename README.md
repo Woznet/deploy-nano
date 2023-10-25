@@ -29,6 +29,7 @@ Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.git
 - nano-win - https://github.com/lhmouse/nano-win
   - exe - https://files.lhmouse.com/nano-win/
 - nvm - https://github.com/nvm-sh/nvm
+- nano - https://git.savannah.gnu.org/git/nano.git
 
 ### Other helpful links
 - BLFS page for nano - https://www.linuxfromscratch.org/blfs/view/svn/postlfs/nano.html
