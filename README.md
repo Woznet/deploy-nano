@@ -2,7 +2,7 @@
 
 ## **Ubuntu**
 - edit config files
-- install apps like [powershell][6], [gh][7], [nvm][8], npm
+- install apps like [powershell][6], [gh][7], [nvm][8]
 - build [nano-7.2][4]
 - add [nanorc syntax][1]
 
