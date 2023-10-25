@@ -10,7 +10,6 @@ curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/c
 curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bash_aliases | tee ~/.bash_aliases >/dev/null
 
 # link user bashrc and aliases to root
-# sudo ln ~/.bashrc /root/.bashrc
 sudo cp --force ~/.bashrc /root/.bashrc
 sudo ln --force ~/.bash_aliases /root/.bash_aliases
 
