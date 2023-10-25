@@ -16,7 +16,7 @@ sudo apt install -y apt-transport-https curl software-properties-common wget xdg
     libcairo2-doc libc-ares-dev libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev \
     libglib2.0-doc libice-doc libmagic1 libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev \
     libncurses-dev libncursesw5-dev libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils \
-    ncurses-doc pkg-config zlib1g-dev ffmpeg ffmpeg-doc
+    ncurses-doc pkg-config zlib1g-dev ffmpeg ffmpeg-doc most
 
 # install powershell
 if [[ ! $(which pwsh) ]]; then
@@ -27,6 +27,7 @@ if [[ ! $(which pwsh) ]]; then
         rm -v packages-microsoft-prod.deb &&
         sudo apt install -y powershell
     mkdir -p $HOME/.config/powershell/
+    curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/profile.ps1 | sudo tee /opt/microsoft/powershell/7/profile.ps1 >/dev/null
 fi
 
 # install gh
