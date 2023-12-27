@@ -3,20 +3,21 @@
 # remove rhythmbox
 sudo apt purge -y rhythmbox* aisleriot
 
-
-
 # update software
 sudo apt update
 
 # install software
 sudo apt install -y apt-transport-https curl software-properties-common wget xdg-utils git-all \
     autopoint build-essential clang devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib \
-    gettext gettext-doc glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en \
-    language-pack-en-base libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev \
-    libcairo2-doc libc-ares-dev libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev \
-    libglib2.0-doc libice-doc libmagic1 libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev \
-    libncurses-dev libncursesw5-dev libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils \
-    ncurses-doc pkg-config zlib1g-dev ffmpeg ffmpeg-doc most
+    glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base \
+    libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev \
+    libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 \
+    libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev \
+    libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev \
+    ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests
+
+# generate ssh keys
+
 
 # install powershell
 if [[ ! $(which pwsh) ]]; then
