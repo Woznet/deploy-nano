@@ -103,14 +103,17 @@ if ! shopt -oq posix; then
   fi
 fi
 
+#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#
+
+##########################################################################
+##########################################################################
+## Custom Config Below
+##########################################################################
+##########################################################################
+
+#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#
+
 #-+-#-+-#-+-#-+-#
-# # custom function for tldr bash completion import
-# concatenate_paths() {
-#   base_path=${1}
-#   sub_path=${2}
-#   full_path="${base_path:+$base_path/}$sub_path"
-#   full_path=$(realpath ${full_path})
-# }
 #-+-#-+-#-+-#-+-#
 
 if [ $EUID == 0 ]; then
@@ -118,6 +121,8 @@ if [ $EUID == 0 ]; then
 else
   export PS1="\[\033[38;5;214m\]\u\[\033[38;5;32m\]@\[\033[38;5;112m\]\h\[\033[38;5;32m\]:\[\033[38;5;166m\]\w \[\033[38;5;32m\]\$ \[\033[0m\]"
 fi
+
+export PS2="  "
 
 #-+-#-+-#-+-#-+-#
 if [[ $(which most) ]]; then
@@ -142,7 +147,6 @@ if [[ -d "$HOME/.nvm" ]]; then
     }
 
     ## tldr bash completion - alt method - handles npm version updates
-    # source $(concatenate_paths $(dirname $(which tldr)) './lib/node_modules/tldr/bin/completion/bash/tldr')
     source $(concat_paths $(dirname $(realpath $(which tldr))) 'completion/bash/tldr')
   fi
 
