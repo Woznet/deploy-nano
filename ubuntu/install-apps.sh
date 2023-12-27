@@ -17,7 +17,10 @@ sudo apt install -y apt-transport-https curl software-properties-common wget xdg
     ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests
 
 # generate ssh keys
-
+if [ ! -f ~/.ssh/id_rsa ]; then
+    echo -e "\e[4m\e[38;2;233;125;60mCreating ssh key ~/.ssh/id_rsa\e[0m"
+    ssh-keygen -t rsa -b 4096 -C "$(id --name --user)@$(hostname --fqdn)" -N "" -f ~/.ssh/id_rsa
+fi
 
 # install powershell
 if [[ ! $(which pwsh) ]]; then
