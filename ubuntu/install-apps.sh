@@ -52,14 +52,8 @@ fi
 
 # install node
 if [[ ! $(which node) ]]; then
-    # nvm install node
     nvm install --lts
 fi
-
-# install npm - SHOULD BE UNNEEDED BECAUSE OF - nvm install --lts
-# if [[ ! $(which npm) ]]; then
-#     ""
-# fi
 
 # install tldr
 if [[ ! $(which npm) ]]; then
