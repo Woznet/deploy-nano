@@ -181,3 +181,23 @@ export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 shopt -s histverify
 
 #-+-#-+-#-+-#-+-#
+
+if [[ $(which dotnet) ]]; then
+  export DOTNET_CLI_TELEMETRY_OPTOUT='true'
+fi
+
+#-+-#-+-#-+-#-+-#
+
+# Immediatedly add command to history
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+#-+-#-+-#-+-#-+-#
+
+HISTSIZE=5000
+HISTFILESIZE=10000
+
+#-+-#-+-#-+-#-+-#
+
+#-+-#-+-#-+-#-+-#
+
+#-+-#-+-#-+-#-+-#
