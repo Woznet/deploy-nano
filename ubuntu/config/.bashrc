@@ -165,6 +165,10 @@ if [[ $(which op) ]]; then
   source <(op completion bash)
 fi
 
+if [[ $(which pip) ]]; then
+  source <(pip completion --bash)
+fi
+
 # mountpoint -q /mnt/u || sudo mount -t drvfs U: /mnt/u -o uid=$(id -u),gid=$(id -g)
 # mountpoint -q /mnt/v || sudo mount -t drvfs V: /mnt/v -o uid=$(id -u),gid=$(id -g)
 #-+-#-+-#-+-#-+-#
