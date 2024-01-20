@@ -14,7 +14,8 @@ sudo apt install -y apt-transport-https curl software-properties-common wget xdg
     libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 \
     libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev \
     libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev \
-    ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests
+    ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 \
+    python3-doc python-is-python3 python3-pip
 
 # generate ssh keys
 if [ ! -f ~/.ssh/id_rsa ]; then
@@ -60,6 +61,18 @@ if [[ ! $(which npm) ]]; then
     npm install -g tldr
 fi
 
+# install vscode
+if [[ ! $(which code) ]]; then
+    sudo apt-get install wget gpg
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor >packages.microsoft.gpg
+    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+    sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+    rm -f packages.microsoft.gpg
+
+    sudo apt update
+    sudo apt install code
+fi
+
 # Set clock to 12 hour format
 if [[ $(which gsettings) ]]; then
     gsettings set org.gnome.desktop.interface clock-format 12h
@@ -67,4 +80,3 @@ fi
 
 # start build-nano.sh script
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/build-nano.sh | bash
-
