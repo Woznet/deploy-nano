@@ -40,3 +40,6 @@ chown --changes --recursive root:root /usr/share/nano/
 
 rm -v /tmp/*.tmp
 
+# Set up the default editor to be nano
+sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nano 1 &&
+  sudo update-alternatives --set editor /usr/bin/nano
