@@ -80,5 +80,8 @@ if [[ $(which gsettings) ]]; then
     gsettings set org.gnome.desktop.interface clock-format 12h
 fi
 
+# Save Docker Install script
+curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/install-docker.sh | tee ~/temp/install-docker.sh >/dev/null
+
 # start build-nano.sh script
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/build-nano.sh | bash
