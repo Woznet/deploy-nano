@@ -7,10 +7,10 @@ sudo apt purge -y rhythmbox* aisleriot
 sudo apt update
 
 # install updates
-sudo apt full-upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -y
 
 # install software
-sudo apt install -y apt-transport-https curl software-properties-common wget xdg-utils git-all \
+sudo DEBIAN_FRONTEND=noninteractive apt install -y apt-transport-https curl software-properties-common wget xdg-utils git-all \
     autopoint build-essential clang devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib \
     glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base \
     libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev \
@@ -34,7 +34,7 @@ if [[ ! $(which pwsh) ]]; then
     sudo dpkg -i packages-microsoft-prod.deb && \
     sudo apt update && \
     rm -v packages-microsoft-prod.deb && \
-    sudo apt install -y powershell
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y powershell
     mkdir -p $HOME/.config/powershell/
     curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/profile.ps1 | sudo tee /opt/microsoft/powershell/7/profile.ps1 >/dev/null
 fi
@@ -45,7 +45,7 @@ if [[ ! $(which gh) ]]; then
     sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null && \
     sudo apt update && \
-    sudo apt install gh -y
+    sudo DEBIAN_FRONTEND=noninteractive apt install gh -y
 fi
 
 # install nvm
@@ -75,7 +75,7 @@ if [[ ! $(which code) ]]; then
     rm -f packages.microsoft.gpg
 
     sudo apt update
-    sudo apt install code
+    sudo DEBIAN_FRONTEND=noninteractive apt install code
 fi
 
 # Set clock to 12 hour format
