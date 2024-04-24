@@ -19,6 +19,13 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y apt-transport-https curl soft
     libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg \
     ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip-full p7zip-rar
 
+
+# dotnet config
+## dotnet packages from only packages.microsoft.com 
+curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-mspkgs | sudo tee /etc/apt/preferences.d/dotnet-mspkgs >/dev/null
+## dotnet set variables 
+curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-cli-config.sh | sudo tee /etc/profile.d/dotnet-cli-config.sh >/dev/null
+
 # generate ssh keys
 if [ ! -f ~/.ssh/id_rsa ]; then
     echo -e "\e[4m\e[38;2;233;125;60mCreating ssh key ~/.ssh/id_rsa\e[0m"
