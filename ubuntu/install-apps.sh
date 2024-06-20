@@ -68,6 +68,7 @@ fi
 
 # install node
 if [[ ! $(which node) ]]; then
+    source ~/.bashrc
     nvm install --lts
     nvm use default
     npm install -g tldr
