@@ -14,8 +14,8 @@ log_error() {
 # Critical functions
 update_software() {
     echo "Starting software update..."
-    sudo apt update || {
-        log_error "update_software - sudo apt update"
+    sudo DEBIAN_FRONTEND=noninteractive apt update || {
+        log_error "update_software - sudo DEBIAN_FRONTEND=noninteractive apt update"
         error_exit
     }
     echo "Software update completed successfully."
@@ -23,7 +23,7 @@ update_software() {
 
 install_software() {
     echo "Starting installation of required software packages..."
-    sudo apt install -y apt-transport-https curl software-properties-common git-all \
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y apt-transport-https curl software-properties-common git-all \
         autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils \
         glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang \
         libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip \
@@ -32,7 +32,7 @@ install_software() {
         libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg \
         ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip-full p7zip-rar ||
         {
-            log_error "install_software - sudo apt install"
+            log_error "install_software - sudo DEBIAN_FRONTEND=noninteractive apt install"
             error_exit
         }
     echo "Software installation completed successfully."
@@ -40,7 +40,7 @@ install_software() {
 
 install_updates() {
     echo "Starting full upgrade..."
-    sudo apt full-upgrade -y || {
+    sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -y || {
         log_error "install_updates - sudo full-upgrade"
         error_exit
     }
@@ -132,8 +132,8 @@ configure_userenv() {
 # Non-critical functions
 remove_rhythmbox() {
     echo "Starting removal of Rhythmbox and Aisleriot..."
-    sudo apt purge -y rhythmbox* aisleriot || {
-        log_error "remove_rhythmbox - sudo apt purge"
+    sudo DEBIAN_FRONTEND=noninteractive apt purge -y rhythmbox* aisleriot || {
+        log_error "remove_rhythmbox - sudo DEBIAN_FRONTEND=noninteractive apt purge"
         error_exit
     }
     echo "Rhythmbox and Aisleriot removal completed successfully."
@@ -181,12 +181,12 @@ install_gh() {
             log_error "install_gh - echo repo"
             error_exit
         }
-        sudo apt update || {
-            log_error "install_gh - sudo apt update"
+        sudo DEBIAN_FRONTEND=noninteractive apt update || {
+            log_error "install_gh - sudo DEBIAN_FRONTEND=noninteractive apt update"
             error_exit
         }
-        sudo apt install gh -y || {
-            log_error "install_gh - sudo apt install gh"
+        sudo DEBIAN_FRONTEND=noninteractive apt install gh -y || {
+            log_error "install_gh - sudo DEBIAN_FRONTEND=noninteractive apt install gh"
             error_exit
         }
         echo "GitHub CLI installation completed successfully."
@@ -238,8 +238,8 @@ install_nvm() {
 install_pwsh() {
     echo "Starting installation of PowerShell..."
     if [[ ! $(command -v pwsh) ]]; then
-        sudo apt update || {
-            log_error "install_pwsh - sudo apt update"
+        sudo DEBIAN_FRONTEND=noninteractive apt update || {
+            log_error "install_pwsh - sudo DEBIAN_FRONTEND=noninteractive apt update"
             error_exit
         }
         wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" || {
@@ -250,16 +250,16 @@ install_pwsh() {
             log_error "install_pwsh - sudo dpkg"
             error_exit
         }
-        sudo apt update || {
-            log_error "install_pwsh - sudo apt update"
+        sudo DEBIAN_FRONTEND=noninteractive apt update || {
+            log_error "install_pwsh - sudo DEBIAN_FRONTEND=noninteractive apt update"
             error_exit
         }
         rm -v packages-microsoft-prod.deb || {
             log_error "install_pwsh - rm"
             error_exit
         }
-        sudo apt install -y powershell || {
-            log_error "install_pwsh - sudo apt install powershell"
+        sudo DEBIAN_FRONTEND=noninteractive apt install -y powershell || {
+            log_error "install_pwsh - sudo DEBIAN_FRONTEND=noninteractive apt install powershell"
             error_exit
         }
         mkdir -p "$HOME/.config/powershell/" || {
@@ -299,12 +299,12 @@ install_vscode() {
             log_error "install_vscode - rm gpg file"
             error_exit
         }
-        sudo apt update || {
-            log_error "install_vscode - sudo apt update"
+        sudo DEBIAN_FRONTEND=noninteractive apt update || {
+            log_error "install_vscode - sudo DEBIAN_FRONTEND=noninteractive apt update"
             error_exit
         }
-        sudo apt install -y code || {
-            log_error "install_vscode - sudo apt install code"
+        sudo DEBIAN_FRONTEND=noninteractive apt install -y code || {
+            log_error "install_vscode - sudo DEBIAN_FRONTEND=noninteractive apt install code"
             error_exit
         }
         echo "Visual Studio Code installation completed successfully."
@@ -326,8 +326,8 @@ remove_nano() {
     echo "Checking if nano is installed..."
     if [[ $(command -v nano) ]]; then
         echo "Nano is installed. Removing nano..."
-        sudo apt remove -y nano >/dev/null || {
-            log_error "remove_nano - sudo apt remove nano"
+        sudo DEBIAN_FRONTEND=noninteractive apt remove -y nano >/dev/null || {
+            log_error "remove_nano - sudo DEBIAN_FRONTEND=noninteractive apt remove nano"
             error_exit
         }
         echo "Nano removed successfully."
@@ -440,4 +440,3 @@ set_default_editor() {
     }
     echo "Nano set as the default editor successfully."
 }
-
