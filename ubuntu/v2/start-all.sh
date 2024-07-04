@@ -10,8 +10,8 @@ mkdir -p "$BASE_DIR"
 
 # Set the log file path and ensure permissions
 LOGFILE="$BASE_DIR/install-apps.log"
-touch "$LOGFILE"
-chmod 0666 "$LOGFILE"
+sudo touch "$LOGFILE"
+sudo chmod 0666 "$LOGFILE"
 
 # Fetch and source all functions
 source <(curl -s "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/functions-all.sh")
