@@ -361,7 +361,7 @@ download_nano() {
         error_exit
     }
     cd nano-8.0
-    readlink -f . >>/tmp/nanobuildpath.tmp
+    readlink -f . >/tmp/nanobuildpath.tmp
     echo "Downloaded and extracted nano source successfully."
 }
 
