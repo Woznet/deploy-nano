@@ -121,10 +121,9 @@ configure_userenv() {
 
     # Create user directories
     echo "Creating user directories..."
-    mkdir -v ~/{git,temp,dev} || {
-        log_error "configure_userenv - mkdir user directories"
-        error_exit
-    }
+    for dir in ~/git ~/temp ~/dev; do
+        [ -d "$dir" ] || mkdir -v "$dir" || { log_error "configure_userenv - mkdir $dir"; error_exit; }
+    done
 
     echo "User environment configuration setup completed successfully."
 }

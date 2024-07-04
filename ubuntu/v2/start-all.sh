@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Enable strict mode for error handling
-set -e
+# set -e
 set -o pipefail
 
 # Base directory of the script
