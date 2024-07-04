@@ -4,8 +4,12 @@
 # set -e
 set -o pipefail
 
-# Base directory of the script
-BASE_DIR=$(dirname "$0")
+# Define the base directory explicitly, since we can't rely on dirname "$0"
+BASE_DIR="/tmp/install-apps"
+sudo mkdir -p "$BASE_DIR"
+
+# Set the log file path
+LOGFILE="$BASE_DIR/install-apps.log"
 
 # Fetch and source all functions
 source <(curl -s "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/functions-all.sh")
@@ -31,7 +35,6 @@ run_non_critical "configure_dotnet"
 run_non_critical "generate_ssh_keys"
 run_non_critical "install_gh"
 run_non_critical "install_nvm"
-# run_non_critical "install_node"
 run_non_critical "install_pwsh"
 run_non_critical "install_vscode"
 run_non_critical "save_docker"
