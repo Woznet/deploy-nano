@@ -440,3 +440,4 @@ set_default_editor() {
     }
     echo "Nano set as the default editor successfully."
 }
+
