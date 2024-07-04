@@ -50,6 +50,9 @@ run_non_critical "install_nano"
 run_non_critical "configure_nano"
 run_non_critical "set_default_editor"
 
+# Clean up .tmp files in /tmp
+remove_tmpfiles
+
 echo "All tasks completed successfully."
 
 # Reset DEBIAN_FRONTEND to its default value (optional)
