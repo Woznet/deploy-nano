@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 if [[ $(which nano) ]]; then
     sudo apt remove -y nano >/dev/null
 fi
@@ -27,6 +29,7 @@ readlink -f . >/tmp/nanobuildpath.tmp
     make >>/tmp/nano-make.log
 
 sudo -i
+export DEBIAN_FRONTEND=noninteractive
 cd $(cat /tmp/nanobuildpath.tmp)
 
 make install >>/tmp/nano-makeinstall.log &&
