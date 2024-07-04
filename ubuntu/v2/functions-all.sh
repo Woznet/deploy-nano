@@ -339,10 +339,6 @@ remove_nano() {
 
 clone_nano_syntax() {
     echo "Cloning nano syntax highlighting repository..."
-    # if [ -d "~/git/nano-syntax-highlighting" ]; then
-    #     echo "Directory nano-syntax-highlighting already exists. Removing it..."
-    #     sudo rm -rf nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
-    # fi
 		sudo rm --recursive --force ~/git/nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
 		cd ~/git
     git clone https://github.com/galenguyer/nano-syntax-highlighting.git || { log_error "clone_nano_syntax - git clone"; error_exit; }
@@ -353,6 +349,7 @@ clone_nano_syntax() {
 download_nano() {
     echo "Downloading nano source..."
     cd ~/temp
+		sudo rm --recursive --force ./nano-*
     wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz || {
         log_error "download_nano - wget"
         error_exit
