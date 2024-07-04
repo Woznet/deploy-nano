@@ -339,10 +339,11 @@ remove_nano() {
 
 clone_nano_syntax() {
     echo "Cloning nano syntax highlighting repository..."
-    if [ -d "~/git/nano-syntax-highlighting" ]; then
-        echo "Directory nano-syntax-highlighting already exists. Removing it..."
-        sudo rm -rf nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
-    fi
+    # if [ -d "~/git/nano-syntax-highlighting" ]; then
+    #     echo "Directory nano-syntax-highlighting already exists. Removing it..."
+    #     sudo rm -rf nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
+    # fi
+		sudo rm --recursive --force ~/git/nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
 		cd ~/git
     git clone https://github.com/galenguyer/nano-syntax-highlighting.git || { log_error "clone_nano_syntax - git clone"; error_exit; }
     readlink -f ./nano-syntax-highlighting >/tmp/nanosyntaxpath.tmp
