@@ -8,7 +8,7 @@ set -o pipefail
 BASE_DIR=$(dirname "$0")
 
 # Fetch and source all functions
-source <(curl -s "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/all-functions.sh")
+source <(curl -s "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/functions-all.sh")
 
 # Set the DEBIAN_FRONTEND to noninteractive
 export DEBIAN_FRONTEND=noninteractive
