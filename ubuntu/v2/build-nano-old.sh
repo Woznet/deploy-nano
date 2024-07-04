@@ -6,16 +6,15 @@ fi
 
 cd ~/git
 sudo rm --recursive --force ~/git/nano-syntax-highlighting
-git clone https://github.com/galenguyer/nano-syntax-highlighting.git
+git clone https://github.com/galenguyer/nano-syntax-highlighting.git >/dev/null
 readlink -f ./nano-syntax-highlighting >/tmp/nanosyntaxpath.tmp
 
 cd ~/temp
 sudo rm --recursive --force ./nano-*
-# wget https://www.nano-editor.org/dist/v8/nano-8.0.tar.xz
-wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz
-tar -xf nano-8.0.tar.xz
+wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz >/dev/null
+tar -xf nano-8.0.tar.xz >/dev/null
 cd nano-8.0
-readlink -f . >>/tmp/nanobuildpath.tmp
+readlink -f . >/tmp/nanobuildpath.tmp
 
 ./configure --prefix=/usr \
     --sysconfdir=/etc \
@@ -34,7 +33,7 @@ make install >>/tmp/nano-makeinstall.log &&
     install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.0 >>/tmp/nano-makeinstall.log
 
 cp /etc/nanorc /etc/nanorc.bak >/dev/null
-curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null
+curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null
 
 mv --force $(cat /tmp/nanosyntaxpath.tmp)/*.nanorc /usr/share/nano/ >/dev/null
 chmod --changes =644 /usr/share/nano/*.nanorc >/dev/null

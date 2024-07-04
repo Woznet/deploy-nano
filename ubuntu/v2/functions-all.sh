@@ -200,7 +200,7 @@ install_nvm() {
     # Install NVM
     if [[ ! $(command -v nvm) && ! $(type -t nvm) == function ]]; then
         echo "Installing NVM..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash || {
+        curl --silent -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash || {
             log_error "install_nvm - curl"
             error_exit
         }
@@ -405,7 +405,7 @@ configure_nano() {
         log_error "configure_nano - cp nanorc"
         error_exit
     }
-    curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | sudo tee /etc/nanorc >/dev/null || {
+    curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | sudo tee /etc/nanorc >/dev/null || {
         log_error "configure_nano - curl nanorc"
         error_exit
     }

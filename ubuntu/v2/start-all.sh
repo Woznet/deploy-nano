@@ -14,7 +14,7 @@ sudo touch "$LOGFILE"
 sudo chmod 0666 "$LOGFILE"
 
 # Fetch and source all functions
-source <(curl -s "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/functions-all.sh")
+source <(curl --silent "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/functions-all.sh")
 
 # Set the DEBIAN_FRONTEND to noninteractive
 export DEBIAN_FRONTEND=noninteractive
