@@ -366,7 +366,7 @@ download_nano() {
 build_nano() {
     echo "Configuring and building nano..."
     cd $(cat /tmp/nanobuildpath.tmp)
-    ./configure --prefix=/usr \
+    sudo ./configure --prefix=/usr \
         --sysconfdir=/etc \
         --enable-utf8 \
         --enable-color \
@@ -377,7 +377,7 @@ build_nano() {
         log_error "build_nano - configure"
         error_exit
     }
-    make >>/tmp/nano-make.log || {
+    sudo make >>/tmp/nano-make.log || {
         log_error "build_nano - make"
         error_exit
     }
@@ -388,11 +388,11 @@ install_nano() {
     echo "Installing nano..."
     sudo -i
     cd $(cat /tmp/nanobuildpath.tmp)
-    make install >>/tmp/nano-makeinstall.log || {
+    sudo make install >>/tmp/nano-makeinstall.log || {
         log_error "install_nano - make install"
         error_exit
     }
-    install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.0 >>/tmp/nano-makeinstall.log || {
+    sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.0 >>/tmp/nano-makeinstall.log || {
         log_error "install_nano - install docs"
         error_exit
     }
@@ -401,27 +401,27 @@ install_nano() {
 
 configure_nano() {
     echo "Configuring nano..."
-    cp /etc/nanorc /etc/nanorc.bak >/dev/null || {
+    sudo cp /etc/nanorc /etc/nanorc.bak >/dev/null || {
         log_error "configure_nano - cp nanorc"
         error_exit
     }
-    curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null || {
+    curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | sudo tee /etc/nanorc >/dev/null || {
         log_error "configure_nano - curl nanorc"
         error_exit
     }
-    mv --force $(cat /tmp/nanosyntaxpath.tmp)/*.nanorc /usr/share/nano/ >/dev/null || {
+    sudo mv --force $(cat /tmp/nanosyntaxpath.tmp)/*.nanorc /usr/share/nano/ >/dev/null || {
         log_error "configure_nano - mv syntax files"
         error_exit
     }
-    chmod --changes =644 /usr/share/nano/*.nanorc >/dev/null || {
+    sudo chmod --changes =644 /usr/share/nano/*.nanorc >/dev/null || {
         log_error "configure_nano - chmod syntax files"
         error_exit
     }
-    chown --changes --recursive root:root /usr/share/nano/ >/dev/null || {
+    sudo chown --changes --recursive root:root /usr/share/nano/ >/dev/null || {
         log_error "configure_nano - chown syntax files"
         error_exit
     }
-    rm -v /tmp/*.tmp >/dev/null || {
+    sudo rm -v /tmp/*.tmp >/dev/null || {
         log_error "configure_nano - rm tmp files"
         error_exit
     }
