@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Enable strict mode for error handling
-# set -e
+set -e
 set -o pipefail
 
 # Define the base directory explicitly, since we can't rely on dirname "$0"
 BASE_DIR="/tmp/install-apps"
-sudo mkdir -p "$BASE_DIR"
+mkdir -p "$BASE_DIR"
 
 # Set the log file path
 LOGFILE="$BASE_DIR/install-apps.log"
@@ -38,6 +38,15 @@ run_non_critical "install_nvm"
 run_non_critical "install_pwsh"
 run_non_critical "install_vscode"
 run_non_critical "save_docker"
+
+# Functions related to building and configuring nano
+run_non_critical "remove_nano"
+run_non_critical "clone_nano_syntax"
+run_non_critical "download_nano"
+run_non_critical "build_nano"
+run_non_critical "install_nano"
+run_non_critical "configure_nano"
+run_non_critical "set_default_editor"
 
 echo "All tasks completed successfully."
 
