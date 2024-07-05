@@ -6,6 +6,11 @@
 - build [nano-7.2][4]
 - add [nanorc syntax][1]
 
+### V2 - Run all with start-all.sh
+```sh
+curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/start-all.sh | bash
+```
+
 ### Run all parts for Ubuntu - [start.sh][5]
 ```sh
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/start.sh | bash
@@ -46,5 +51,4 @@ Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.git
 [7]: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian-ubuntu-linux-raspberry-pi-os-apt
 [8]: https://github.com/nvm-sh/nvm
 [9]: https://github.com/Woznet/deploy-nano/blob/main/windows/deploy.ps1
-
-
+[10]: https://github.com/nvm-sh/nvm
