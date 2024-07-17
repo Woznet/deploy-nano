@@ -122,7 +122,10 @@ configure_userenv() {
     # Create user directories
     echo "Creating user directories..."
     for dir in ~/git ~/temp ~/dev; do
-        [ -d "$dir" ] || mkdir -v "$dir" || { log_error "configure_userenv - mkdir $dir"; error_exit; }
+        [ -d "$dir" ] || mkdir -v "$dir" || {
+            log_error "configure_userenv - mkdir $dir"
+            error_exit
+        }
     done
 
     echo "User environment configuration setup completed successfully."
@@ -196,7 +199,7 @@ install_gh() {
 
 install_nvm() {
     echo "Starting installation of NVM and Node.js..."
-    
+
     # Install NVM
     if [[ ! $(command -v nvm) && ! $(type -t nvm) == function ]]; then
         echo "Installing NVM..."
@@ -339,9 +342,15 @@ remove_nano() {
 
 clone_nano_syntax() {
     echo "Cloning nano syntax highlighting repository..."
-		sudo rm --recursive --force ~/git/nano-syntax-highlighting || { log_error "clone_nano_syntax - rm -rf"; error_exit; }
-		cd ~/git
-    git clone https://github.com/galenguyer/nano-syntax-highlighting.git || { log_error "clone_nano_syntax - git clone"; error_exit; }
+    sudo rm --recursive --force ~/git/nano-syntax-highlighting || {
+        log_error "clone_nano_syntax - rm -rf"
+        error_exit
+    }
+    cd ~/git
+    git clone https://github.com/galenguyer/nano-syntax-highlighting.git || {
+        log_error "clone_nano_syntax - git clone"
+        error_exit
+    }
     readlink -f ./nano-syntax-highlighting >/tmp/nanosyntaxpath.tmp
     echo "Cloned nano syntax highlighting repository successfully."
 }
@@ -349,16 +358,16 @@ clone_nano_syntax() {
 download_nano() {
     echo "Downloading nano source..."
     cd ~/temp
-		sudo rm --recursive --force ./nano-*
-    wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz || {
+    sudo rm --recursive --force ./nano-*
+    wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.1.tar.xz || {
         log_error "download_nano - wget"
         error_exit
     }
-    tar -xf nano-8.0.tar.xz || {
+    tar -xf nano-8.1.tar.xz || {
         log_error "download_nano - tar -xf"
         error_exit
     }
-    cd nano-8.0
+    cd nano-8.1
     readlink -f . >/tmp/nanobuildpath.tmp
     echo "Downloaded and extracted nano source successfully."
 }
@@ -373,7 +382,7 @@ build_nano() {
         --enable-extra \
         --enable-nanorc \
         --enable-multibuffer \
-        --docdir=/usr/share/doc/nano-8.0 >>/tmp/nano-config.log || {
+        --docdir=/usr/share/doc/nano-8.1 >>/tmp/nano-config.log || {
         log_error "build_nano - configure"
         error_exit
     }
@@ -392,7 +401,7 @@ install_nano() {
         log_error "install_nano - make install"
         error_exit
     }
-    sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.0 >>/tmp/nano-makeinstall.log || {
+    sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.1 >>/tmp/nano-makeinstall.log || {
         log_error "install_nano - install docs"
         error_exit
     }
@@ -442,7 +451,7 @@ set_default_editor() {
 }
 
 remove_tmpfiles() {
-	echo "Deleting /tmp/nanosyntaxpath.tmp and /tmp/nanobuildpath.tmp"
-	sudo rm /tmp/nanosyntaxpath.tmp
-	sudo rm /tmp/nanobuildpath.tmp
+    echo "Deleting /tmp/nanosyntaxpath.tmp and /tmp/nanobuildpath.tmp"
+    sudo rm /tmp/nanosyntaxpath.tmp
+    sudo rm /tmp/nanobuildpath.tmp
 }
