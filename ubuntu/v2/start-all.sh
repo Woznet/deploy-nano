@@ -55,5 +55,8 @@ remove_tmpfiles
 
 echo "All tasks completed successfully."
 
+# Run completion builder script
+source <(curl --silent "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/completion_builder.sh")
+
 # Reset DEBIAN_FRONTEND to its default value (optional)
 unset DEBIAN_FRONTEND
