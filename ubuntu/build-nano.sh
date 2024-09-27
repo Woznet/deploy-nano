@@ -10,9 +10,10 @@ readlink -f ./nano-syntax-highlighting >/tmp/nanosyntaxpath.tmp
 
 cd ~/temp
 # wget https://www.nano-editor.org/dist/v8/nano-8.0.tar.xz
-wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz
-tar -xf nano-8.0.tar.xz
-cd nano-8.0
+# wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.0.tar.xz
+wget https://www.nano-editor.org/dist/v8/nano-8.2.tar.xz
+tar -xf nano-8.2.tar.xz
+cd nano-8.2
 readlink -f . >>/tmp/nanobuildpath.tmp
 
 ./configure --prefix=/usr \
@@ -22,14 +23,14 @@ readlink -f . >>/tmp/nanobuildpath.tmp
   --enable-extra \
   --enable-nanorc \
   --enable-multibuffer \
-  --docdir=/usr/share/doc/nano-8.0 >>/tmp/nano-config.log &&
+  --docdir=/usr/share/doc/nano-8.2 >>/tmp/nano-config.log &&
   make >>/tmp/nano-make.log
 
 sudo -i
 cd $(cat /tmp/nanobuildpath.tmp)
 
 make install >>/tmp/nano-makeinstall.log &&
-  install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.0 >>/tmp/nano-makeinstall.log
+  install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.2 >>/tmp/nano-makeinstall.log
 
 cp /etc/nanorc /etc/nanorc.bak >/dev/null
 curl https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | tee /etc/nanorc >/dev/null
