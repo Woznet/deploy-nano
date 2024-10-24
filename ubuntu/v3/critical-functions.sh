@@ -3,13 +3,13 @@
 # Critical functions
 update_software() {
     log "Starting software update..."
-    run_command "sudo DEBIAN_FRONTEND=noninteractive apt update"
+    run_command "sudo apt update"
     log "Software update completed successfully."
 }
 
 install_software() {
     log "Starting installation of required software packages..."
-    run_command "sudo DEBIAN_FRONTEND=noninteractive apt install -y apt-transport-https curl software-properties-common git-all \
+    run_command "sudo apt install -y apt-transport-https curl software-properties-common git-all \
     autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils \
     glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang \
     libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip \
@@ -22,7 +22,7 @@ install_software() {
 
 install_updates() {
     log "Starting full upgrade..."
-    run_command "sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -y"
+    run_command "sudo apt full-upgrade -y"
     log "Full upgrade completed successfully."
 }
 
