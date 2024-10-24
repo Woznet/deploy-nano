@@ -85,8 +85,8 @@ source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/mai
 source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/non-critical-functions.sh"
 
 # Set the DEBIAN_FRONTEND to noninteractive
-export DEBIAN_FRONTEND=noninteractive
-log "DEBIAN_FRONTEND set to noninteractive"
+# export DEBIAN_FRONTEND=noninteractive
+# log "DEBIAN_FRONTEND set to noninteractive"
 
 # Run critical functions
 log "Starting critical function execution."
@@ -131,5 +131,5 @@ echo "All tasks completed successfully."
 source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion-builder.sh"
 
 # Reset DEBIAN_FRONTEND to its default value (optional)
-unset DEBIAN_FRONTEND
-log "DEBIAN_FRONTEND reset to default"
+# unset DEBIAN_FRONTEND
+# log "DEBIAN_FRONTEND reset to default"
