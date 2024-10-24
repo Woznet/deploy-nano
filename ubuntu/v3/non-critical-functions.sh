@@ -3,7 +3,7 @@
 # Non-critical functions
 remove_rhythmbox() {
     log "Starting removal of Rhythmbox and Aisleriot..."
-    run_command "sudo DEBIAN_FRONTEND=noninteractive apt purge -y rhythmbox* aisleriot"
+    run_command "sudo apt purge -y rhythmbox* aisleriot"
     log "Rhythmbox and Aisleriot removal completed successfully."
 }
 
@@ -31,8 +31,8 @@ install_gh() {
         run_command "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg"
         run_command "sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg"
         run_command "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt update"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt install gh -y"
+        run_command "sudo apt update"
+        run_command "sudo apt install gh -y"
         log "GitHub CLI installation completed successfully."
     else
         log "GitHub CLI is already installed."
@@ -69,12 +69,12 @@ install_nvm() {
 install_pwsh() {
     log "Starting installation of PowerShell..."
     if [[ ! $(command -v pwsh) ]]; then
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt update"
+        run_command "sudo apt update"
         run_command "wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
         run_command "sudo dpkg -i packages-microsoft-prod.deb"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt update"
+        run_command "sudo apt update"
         run_command "rm -v packages-microsoft-prod.deb"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt install -y powershell"
+        run_command "sudo apt install -y powershell"
         log "PowerShell installation completed successfully."
     else
         log "PowerShell is already installed."
@@ -89,8 +89,8 @@ install_vscode() {
         run_command "sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg"
         run_command "sudo sh -c 'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'"
         run_command "rm -f packages.microsoft.gpg"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt update"
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt install -y code"
+        run_command "sudo apt update"
+        run_command "sudo apt install -y code"
         log "Visual Studio Code installation completed successfully."
     else
         log "Visual Studio Code is already installed."
@@ -107,7 +107,7 @@ remove_nano() {
     log "Checking if nano is installed..."
     if [[ $(command -v nano) ]]; then
         log "Nano is installed. Removing nano..."
-        run_command "sudo DEBIAN_FRONTEND=noninteractive apt remove -y nano"
+        run_command "sudo apt remove -y nano"
         log "Nano removed successfully."
     else
         log "Nano is not installed."
