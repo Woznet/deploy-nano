@@ -132,14 +132,14 @@ run_non_critical "install_nano"
 run_non_critical "configure_nano"
 run_non_critical "set_default_editor"
 
+# Run completion builder script
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion-builder.sh"
+
 # Clean up .tmp files in /tmp
 remove_tmpfiles || log_error "remove_tmpfiles"
 
 log "All tasks completed successfully."
 echo "All tasks completed successfully."
-
-# Run completion builder script
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion-builder.sh"
 
 # Reset DEBIAN_FRONTEND to its default value (optional)
 # unset DEBIAN_FRONTEND
