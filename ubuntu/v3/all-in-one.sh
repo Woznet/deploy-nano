@@ -14,8 +14,8 @@ LOGFILE="$BASE_DIR/install-apps_$(date +%Y%m%d_%H%M%S).log"
 mkdir -p "$BASE_DIR"
 
 # Set the log file path and ensure permissions
-sudo touch "$LOGFILE"
-sudo chmod 0644 "$LOGFILE" # Restricting permissions to prevent potential security issues
+touch "$LOGFILE"
+chmod 0644 "$LOGFILE" # Restricting permissions to prevent potential security issues
 
 # Enable trap after LOGFILE is defined
 trap 'echo "An error occurred. Check $LOGFILE for details." >&2' ERR
