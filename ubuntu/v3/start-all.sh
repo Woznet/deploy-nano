@@ -49,14 +49,25 @@ download_file() {
     local url="$1"
     local dest="$2"
     log "Downloading $url to $dest"
-    curl --silent --fail "$url" -o "$dest" || {
-        log_error "Failed to download $url"
-        error_exit
-    }
-    chmod 644 "$dest" || {
-        log_error "Failed to set permissions for $dest"
-        error_exit
-    }
+    if [[ "$dest" == /etc/* ]]; then
+        curl --silent --fail "$url" | sudo tee "$dest" >/dev/null || {
+            log_error "Failed to download $url"
+            error_exit
+        }
+        sudo chmod 644 "$dest" || {
+            log_error "Failed to set permissions for $dest"
+            error_exit
+        }
+    else
+        curl --silent --fail "$url" | tee "$dest" >/dev/null || {
+            log_error "Failed to download $url"
+            error_exit
+        }
+        chmod 644 "$dest" || {
+            log_error "Failed to set permissions for $dest"
+            error_exit
+        }
+    fi
     log "Downloaded $url to $dest successfully."
 }
 
