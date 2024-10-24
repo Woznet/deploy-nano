@@ -78,11 +78,11 @@ source_external_script() {
 }
 
 # Source the configuration file with global variables using source_external_script
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/config.sh"
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/config.sh"
 
 # Fetch and source critical and non-critical functions
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/critical-functions.sh"
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/non-critical-functions.sh"
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/critical-functions.sh"
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/non-critical-functions.sh"
 
 # Set the DEBIAN_FRONTEND to noninteractive
 export DEBIAN_FRONTEND=noninteractive
@@ -128,7 +128,7 @@ log "All tasks completed successfully."
 echo "All tasks completed successfully."
 
 # Run completion builder script
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v2/completion_builder.sh"
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion_builder.sh"
 
 # Reset DEBIAN_FRONTEND to its default value (optional)
 unset DEBIAN_FRONTEND
