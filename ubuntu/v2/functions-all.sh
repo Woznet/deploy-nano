@@ -359,15 +359,15 @@ download_nano() {
     echo "Downloading nano source..."
     cd ~/temp
     sudo rm --recursive --force ./nano-*
-    wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.1.tar.xz || {
+    wget https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/nano-8.2.tar.xz || {
         log_error "download_nano - wget"
         error_exit
     }
-    tar -xf nano-8.1.tar.xz || {
+    tar -xf nano-8.2.tar.xz || {
         log_error "download_nano - tar -xf"
         error_exit
     }
-    cd nano-8.1
+    cd nano-8.2
     readlink -f . >/tmp/nanobuildpath.tmp
     echo "Downloaded and extracted nano source successfully."
 }
@@ -382,7 +382,7 @@ build_nano() {
         --enable-extra \
         --enable-nanorc \
         --enable-multibuffer \
-        --docdir=/usr/share/doc/nano-8.1 >>/tmp/nano-config.log || {
+        --docdir=/usr/share/doc/nano-8.2 >>/tmp/nano-config.log || {
         log_error "build_nano - configure"
         error_exit
     }
@@ -401,7 +401,7 @@ install_nano() {
         log_error "install_nano - make install"
         error_exit
     }
-    sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.1 >>/tmp/nano-makeinstall.log || {
+    sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.2 >>/tmp/nano-makeinstall.log || {
         log_error "install_nano - install docs"
         error_exit
     }
