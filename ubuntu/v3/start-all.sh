@@ -128,7 +128,7 @@ log "All tasks completed successfully."
 echo "All tasks completed successfully."
 
 # Run completion builder script
-source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion_builder.sh"
+source_external_script "https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v3/completion-builder.sh"
 
 # Reset DEBIAN_FRONTEND to its default value (optional)
 unset DEBIAN_FRONTEND
