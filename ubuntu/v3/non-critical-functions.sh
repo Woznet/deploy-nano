@@ -59,10 +59,19 @@ install_nvm() {
         source ~/.bashrc
         run_command "nvm install --lts"
         run_command "nvm use default"
-        run_command "npm install -g tldr"
         log "Node.js installation completed successfully."
     else
         log "Node.js is already installed."
+    fi
+
+    # Install tldr
+    if [[ ! $(command -v tldr) ]]; then
+        log "Installing tldr..."
+        source ~/.bashrc
+        run_command "npm install -g tldr"
+        log "tldr installation completed successfully."
+    else
+        log "tldr is already installed."
     fi
 }
 
@@ -94,6 +103,34 @@ install_vscode() {
         log "Visual Studio Code installation completed successfully."
     else
         log "Visual Studio Code is already installed."
+    fi
+}
+
+install_az() {
+    log "Starting installation of Azure Cli..."
+    if [[ ! $(command -v /usr/bin/az) ]]; then
+        run_command "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash"
+        log "Azure Cli installation completed successfully."
+    else
+        log "Azure Cli is already installed."
+    fi
+}
+
+install_1password() {
+    log "Starting installation of 1Password..."
+    if [[ ! $(command -v 1password) ]]; then
+        run_command "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg"
+        run_command "echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/\$(dpkg --print-architecture) stable main\" | sudo tee /etc/apt/sources.list.d/1password.list"
+        run_command "sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/"
+        run_command "curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol"
+        run_command "sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22"
+        run_command "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg"
+        run_command "sudo apt update"
+        run_command "sudo apt install 1password"
+        run_command "sudo apt install 1password-cli"
+        log "1Password installation completed successfully."
+    else
+        log "1Password is already installed."
     fi
 }
 
@@ -170,5 +207,3 @@ remove_tmpfiles() {
     run_command "sudo rm /tmp/nanosyntaxpath.tmp /tmp/nanobuildpath.tmp"
     log "Temporary files deleted successfully."
 }
-
-

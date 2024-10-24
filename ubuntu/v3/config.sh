@@ -2,7 +2,6 @@
 
 # Configuration variables shared across all scripts
 
-
 # URLs for downloading configuration files and scripts
 DOTNET_CONFIG_URL="https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-mspkgs"
 DOTNET_PROFILE_URL="https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-cli-config.sh"

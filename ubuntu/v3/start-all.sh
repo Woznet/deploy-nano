@@ -121,6 +121,8 @@ run_non_critical "install_gh"
 run_non_critical "install_nvm"
 run_non_critical "install_pwsh"
 run_non_critical "install_vscode"
+run_non_critical "install_1password"
+run_non_critical "install_az"
 run_non_critical "save_docker"
 
 # Functions related to building and configuring nano
