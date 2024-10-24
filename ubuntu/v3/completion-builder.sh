@@ -51,7 +51,7 @@ for key in "${!completions[@]}"; do
         fi
 
         # Run the `cat` command specified in the value to extract the completion script
-        echo "Generating completion script for $key..."
+        # echo "Generating completion script for $key..."
         completion_output=$(eval "$value" 2>/dev/null)
         if [[ -z "$completion_output" ]]; then
             error_msg="No completion script output for $key. Skipping creation."
@@ -64,7 +64,7 @@ for key in "${!completions[@]}"; do
         echo "$completion_output" | sudo tee "$output_file" >/dev/null
     elif [[ "$value" == https://* ]]; then
         # If the value starts with "https://", download it
-        echo "Downloading completion script for $key..."
+        # echo "Downloading completion script for $key..."
         sudo curl -s "$value" -o "$output_file"
         if [[ $? -ne 0 ]]; then
             error_msg="Failed to download completion script for $key."
@@ -83,7 +83,7 @@ for key in "${!completions[@]}"; do
         fi
 
         # Run the command and save the output if there is any
-        echo "Generating completion script for $key..."
+        # echo "Generating completion script for $key..."
         completion_output=$(eval "$value" 2>/dev/null)
         if [[ -z "$completion_output" ]]; then
             error_msg="No completion script output for $key. Skipping creation."
@@ -105,7 +105,7 @@ for key in "${!completions[@]}"; do
         continue
     fi
 
-    echo "Completion script for $key saved to $output_file."
+    # echo "Completion script for $key saved to $output_file."
 done
 
 echo "All completion scripts have been processed."
