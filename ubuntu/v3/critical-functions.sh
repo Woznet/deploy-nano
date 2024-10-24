@@ -49,9 +49,9 @@ configure_userenv() {
 
     # Configure sudoers and inputrc
     log "Configuring sudoers and inputrc..."
-    download_file "$SUDOERS_URL" "/etc/sudoers.d/woz"
-    download_file "$INPUTRC_URL" "/etc/inputrc"
-    download_file "$DISABLE_IPV6_URL" "/etc/sysctl.d/20-disable-ipv6.conf"
+    sudo download_file "$SUDOERS_URL" "/etc/sudoers.d/woz"
+    sudo download_file "$INPUTRC_URL" "/etc/inputrc"
+    sudo download_file "$DISABLE_IPV6_URL" "/etc/sysctl.d/20-disable-ipv6.conf"
 
     # Create user directories
     log "Creating user directories..."
