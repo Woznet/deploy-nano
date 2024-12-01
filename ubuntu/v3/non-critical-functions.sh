@@ -118,7 +118,7 @@ install_az() {
 
 install_1password() {
     log "Starting installation of 1Password..."
-    if [[ ! $(command -v 1password) && ! $(command -v op) ]]; then
+    if [[ ! $(command -v 1password) || ! $(command -v op) ]]; then
         run_command "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --yes --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg"
         run_command "echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/\$(dpkg --print-architecture) stable main\" | sudo tee /etc/apt/sources.list.d/1password.list"
         run_command "sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/"
