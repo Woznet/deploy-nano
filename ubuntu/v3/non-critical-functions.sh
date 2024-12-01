@@ -126,8 +126,8 @@ install_1password() {
         run_command "sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22"
         run_command "curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --yes --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg"
         run_command "sudo apt update"
-        run_command "sudo apt install 1password"
-        run_command "sudo apt install 1password-cli"
+        run_command "sudo apt install -y 1password"
+        run_command "sudo apt install -y 1password-cli"
         log "1Password installation completed successfully."
     else
         log "1Password is already installed."
