@@ -130,7 +130,7 @@ run_non_critical "remove_nano"
 run_non_critical "clone_nano_syntax"
 run_non_critical "download_nano"
 run_non_critical "build_nano"
-run_non_critical "install_nano"
+# run_non_critical "install_nano"
 run_non_critical "configure_nano"
 run_non_critical "set_default_editor"
 

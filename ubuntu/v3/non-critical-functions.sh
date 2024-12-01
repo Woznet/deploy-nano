@@ -174,16 +174,18 @@ build_nano() {
     cd $(cat /tmp/nanobuildpath.tmp)
     run_command "sudo ./configure --prefix=/usr --sysconfdir=/etc --enable-utf8 --enable-color --enable-extra --enable-nanorc --enable-multibuffer --docdir=/usr/share/doc/nano-8.2"
     run_command "sudo make"
-    log "Configured and built nano successfully."
-}
-
-install_nano() {
-    log "Installing nano..."
-    cd $(cat /tmp/nanobuildpath.tmp)
     run_command "sudo make install"
     run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.2"
-    log "Nano installed successfully."
+    log "Configured, built and installed nano successfully."
 }
+
+# install_nano() {
+#     log "Installing nano..."
+#     cd $(cat /tmp/nanobuildpath.tmp)
+#     run_command "sudo make install"
+#     run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.2"
+#     log "Nano installed successfully."
+# }
 
 configure_nano() {
     log "Configuring nano..."
