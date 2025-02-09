@@ -14,7 +14,6 @@ declare -A completions=(
     [gh]="gh completion --shell bash"
     [tldr]="$(if command -v tldr >/dev/null 2>&1; then echo 'cat $(realpath -e "$(dirname $(realpath -e $(which tldr)))/completion/bash/tldr")'; else echo ''; fi)"
     [dotnet]="https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/_completion/dotnet_completion.sh"
-    [vscode]="https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/_completion/vscode_completion.sh"
     [clang]="https://raw.githubusercontent.com/llvm-mirror/clang/master/utils/bash-autocomplete.sh"
     [az]="https://raw.githubusercontent.com/Azure/azure-cli/dev/az.completion"
 )
