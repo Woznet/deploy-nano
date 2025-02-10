@@ -179,14 +179,6 @@ build_nano() {
     log "Configured, built and installed nano successfully."
 }
 
-# install_nano() {
-#     log "Installing nano..."
-#     cd $(cat /tmp/nanobuildpath.tmp)
-#     run_command "sudo make install"
-#     run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-8.2"
-#     log "Nano installed successfully."
-# }
-
 configure_nano() {
     log "Configuring nano..."
     run_command "sudo cp /etc/nanorc /etc/nanorc.bak"
