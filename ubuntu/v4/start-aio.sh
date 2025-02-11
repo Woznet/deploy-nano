@@ -12,6 +12,7 @@ BASHRC_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/con
 BASH_ALIASES_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bash_aliases'
 SUDOERS_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/sudoers.woz'
 INPUTRC_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/inputrc'
+NANORC_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc'
 DISABLE_IPV6_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/20-disable-ipv6.conf'
 
 NANO_SYNTAX_TEMP_PATH='/tmp/nanosyntaxpath.tmp'
@@ -119,22 +120,22 @@ source_external_script() {
 }
 
 # Load functions
-update_software() {
+check_updates() {
   log 'Starting software update...'
   run_command 'sudo apt update'
   log 'Software update completed successfully.'
-}
-
-install_software() {
-  log 'Starting installation of required software packages...'
-  run_command 'sudo apt install -y apt-transport-https curl software-properties-common git-all autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone'
-  log 'Software installation completed successfully.'
 }
 
 install_updates() {
   log 'Starting full upgrade...'
   run_command 'sudo apt full-upgrade -y'
   log 'Full upgrade completed successfully.'
+}
+
+install_software() {
+  log 'Starting installation of required software packages...'
+  run_command 'sudo apt install -y apt-transport-https curl software-properties-common git-all autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
+  log 'Software installation completed successfully.'
 }
 
 configure_userenv() {
@@ -180,6 +181,8 @@ configure_dotnet() {
   log 'Starting configuration of Dotnet packages...'
   download_file "$DOTNET_CONFIG_URL" '/etc/apt/preferences.d/dotnet-mspkgs'
   download_file "$DOTNET_PROFILE_URL" '/etc/profile.d/dotnet-cli-config.sh'
+  run_command 'sudo add-apt-repository --yes ppa:dotnet/backports'
+  run_command 'sudo apt update'
   log 'Dotnet configuration completed successfully.'
 }
 
@@ -348,15 +351,32 @@ clone_nano_syntax() {
   log 'Cloned nano syntax highlighting repository successfully.'
 }
 
-get_current_nano_version() {
-  log 'Fetching current nano version'
+get_installed_nano_version() {
+  log "Fetching installed nano version"
+  if [[ $(command -v nano) ]]; then
+    local installed_nano_version
+    installed_nano_version=$(nano --version | head -n1 | awk '{print $4}')
+    log "Installed nano version is $installed_nano_version"
+    echo "$installed_nano_version"
+  else
+    log "Nano is not installed, returning version 0.0"
+    echo "0.0"
+  fi
+}
+
+get_latest_nano_version() {
+  log "Fetching latest nano version"
   local nano_version
-  nano_version=$(git ls-remote --sort=-'version:refname' --tags https://git.savannah.gnu.org/git/nano.git \
+  nano_version=$(git ls-remote --sort=-'version:refname' --tags https://git.savannah.gnu.org/git/nano.git 2>/dev/null \
     | head -n1 \
     | awk '{print $2}' \
-    | sed -E 's/^refs\/tags\/v//; s/\^\{\}$//')
-  echo $nano_version
-  log "Current nano version is $nano_version"
+    | sed -E "s/^refs\/tags\/v//; s/\^\{\}$//")
+  if [[ -z "$nano_version" ]]; then
+    nano_version="8.3"
+    log "Git command failed, falling back to version $nano_version"
+  fi
+  log "Latest nano version is $nano_version"
+  echo "$nano_version"
 }
 
 download_nano() {
@@ -364,25 +384,48 @@ download_nano() {
   cd "$HOME/temp"
   run_command 'sudo rm --recursive --force ./nano-*'
   run_command "wget ${NANO_SOURCE_URL}"
-  run_command "tar -xf nano-${NANO_VERSION}.tar.xz"
-  readlink -f $(printf 'nano-%s' "$NANO_VERSION") > "$NANO_BUILD_TEMP_PATH"
+  run_command "tar -xf nano-${NANO_LATEST_VERSION}.tar.xz"
+  readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") > "$NANO_BUILD_TEMP_PATH"
   log 'Downloaded and extracted nano source successfully.'
 }
 
 build_nano() {
   log 'Configuring and building nano...'
   cd "$(cat "$NANO_BUILD_TEMP_PATH")"
-  run_command "sudo ./configure --prefix=/usr --sysconfdir=/etc --enable-utf8 --enable-color --enable-extra --enable-nanorc --enable-multibuffer --docdir=/usr/share/doc/nano-${NANO_VERSION}"
+  run_command "sudo ./configure --prefix=/usr --sysconfdir=/etc --enable-utf8 --enable-color --enable-extra --enable-nanorc --enable-multibuffer --docdir=/usr/share/doc/nano-${NANO_LATEST_VERSION}"
   run_command 'sudo make'
   run_command 'sudo make install'
-  run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-${NANO_VERSION}"
+  run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-${NANO_LATEST_VERSION}"
   log 'Configured, built and installed nano successfully.'
+}
+
+
+should_install_nano() {
+  if [ -z "$NANO_INSTALLED_VERSION" ]; then
+    log "Nano is not installed; should install."
+    echo "1"
+    return 0
+  fi
+
+  if [ "$NANO_INSTALLED_VERSION" = "$NANO_LATEST_VERSION" ]; then
+    log "Nano is up-to-date; no need to install."
+    echo "0"
+    return 0
+  fi
+
+  if [ "$(printf '%s\n%s' "$NANO_INSTALLED_VERSION" "$NANO_LATEST_VERSION" | sort -V | head -n1)" = "$NANO_INSTALLED_VERSION" ]; then
+    log "A newer version of nano is available: $NANO_LATEST_VERSION > $NANO_INSTALLED_VERSION; should install."
+    echo "1"
+  else
+    log "Installed version appears newer than the latest available version; no need to install."
+    echo "0"
+  fi
 }
 
 configure_nano() {
   log 'Configuring nano...'
   run_command 'sudo cp /etc/nanorc /etc/nanorc.bak'
-  run_command 'curl --silent https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/nanorc | sudo tee /etc/nanorc >/dev/null'
+  run_command "curl --silent $NANORC_URL | sudo tee /etc/nanorc >/dev/null"
   run_command "sudo mv --force \"$(cat "$NANO_SYNTAX_TEMP_PATH")\"/*.nanorc /usr/share/nano/"
   run_command 'sudo chmod --changes =644 /usr/share/nano/*.nanorc'
   run_command 'sudo chown --changes --recursive root:root /usr/share/nano/'
@@ -412,13 +455,15 @@ run_non_critical() {
 
 # Starting function execution
 log 'Starting critical function execution.'
-update_software || log_error 'update_software'
-install_software || log_error 'install_software'
+check_updates || log_error 'check_updates'
 install_updates || log_error 'install_updates'
+install_software || log_error 'install_software'
 configure_userenv || log_error 'configure_userenv'
 
-NANO_VERSION=$(get_current_nano_version)
-NANO_SOURCE_URL="https://nano-editor.org/dist/v8/nano-${NANO_VERSION}.tar.xz"
+NANO_INSTALLED_VERSION=$(get_installed_nano_version)
+NANO_LATEST_VERSION=$(get_latest_nano_version)
+SHOULD_INSTALL_NANO=$(should_install_nano)
+NANO_SOURCE_URL="https://nano-editor.org/dist/v8/nano-${NANO_LATEST_VERSION}.tar.xz"
 
 
 log 'Starting non-critical function execution.'
@@ -433,12 +478,15 @@ run_non_critical 'install_1password'
 run_non_critical 'install_az'
 run_non_critical 'install_ngrok'
 run_non_critical 'save_docker'
-run_non_critical 'remove_nano'
-run_non_critical 'clone_nano_syntax'
-run_non_critical 'download_nano'
-run_non_critical 'build_nano'
-run_non_critical 'configure_nano'
-run_non_critical 'set_default_editor'
+
+if [ "$SHOULD_INSTALL_NANO" = "1" ]; then
+  run_non_critical 'remove_nano'
+  run_non_critical 'download_nano'
+  run_non_critical 'build_nano'
+  run_non_critical 'clone_nano_syntax'
+  run_non_critical 'configure_nano'
+  run_non_critical 'set_default_editor'
+fi
 
 # Define the URLs for completions
 TLDR_COMPLETION_URL='https://raw.githubusercontent.com/tldr-pages/tldr-node-client/main/bin/completion/bash/tldr'
@@ -464,12 +512,12 @@ declare -A url_completions=(
     [az]="$AZ_COMPLETION_URL"
 )
 
-target_dir='/etc/bash_completion.d'
+completions_target_dir='/etc/bash_completion.d'
 timestamp=$(date +'%Y%m%d_%H%M%S')
 error_log="error_log_${timestamp}.txt"
 
-if [[ ! -d "$target_dir" ]]; then
-    error_msg="Target directory $target_dir does not exist."
+if [[ ! -d "$completions_target_dir" ]]; then
+    error_msg="Target directory $completions_target_dir does not exist."
     echo -e "${ORANGE_RED}${error_msg}${NC}"
     echo "[$(date)] $error_msg" >>"$error_log"
     exit 1
@@ -478,7 +526,7 @@ fi
 # Process command completions
 for key in "${!command_completions[@]}"; do
     value="${command_completions[$key]}"
-    output_file="${target_dir}/${key}_completion"
+    output_file="${completions_target_dir}/${key}_completion"
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Generating command completion for key: $key" | tee -a "$error_log"
 
@@ -513,7 +561,7 @@ done
 # Process URL completions
 for key in "${!url_completions[@]}"; do
     value="${url_completions[$key]}"
-    output_file="${target_dir}/${key}_completion"
+    output_file="${completions_target_dir}/${key}_completion"
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Downloading URL completion for key: $key from $value" | tee -a "$error_log"
     if ! sudo curl -s "$value" -o "$output_file"; then

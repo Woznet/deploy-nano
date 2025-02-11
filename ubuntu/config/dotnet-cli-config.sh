@@ -1,7 +1,6 @@
 # Config dotnet cli
 
-export PATH="$PATH:/usr/share/dotnet"
-export PATH="$PATH:$HOME/.dotnet/tools"
+export PATH="$PATH:/usr/share/dotnet:$HOME/.dotnet/tools"
 
 export DOTNET_ROOT="/usr/share/dotnet"
 
