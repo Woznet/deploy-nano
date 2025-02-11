@@ -40,7 +40,7 @@ Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.git
 [1]: https://github.com/galenguyer/nano-syntax-highlighting
 [2]: https://github.com/lhmouse/nano-win
 [3]: https://files.lhmouse.com/nano-win/
-[4]: https://www.nano-editor.org/dist/latest/nano-7.2.tar.xz
+[4]: https://www.nano-editor.org/dist/latest/nano-8.3.tar.xz
 [5]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/start.sh
 [6]: https://learn.microsoft.com/en-us/powershell/scripting/install/install-ubuntu
 [7]: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#debian-ubuntu-linux-raspberry-pi-os-apt
