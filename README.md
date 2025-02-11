@@ -6,7 +6,7 @@
 - build [nano-8.3][4] (script checks for latest release of nano)
 - add [nanorc syntax][1]
 
-### V4 - Run all with start-aio.sh - [start-aio.sh][11]
+### V4 - Run with start-aio.sh - [start-aio.sh][11]
 ```sh
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio.sh | bash
 ```
