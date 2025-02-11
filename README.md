@@ -3,10 +3,10 @@
 ## **Ubuntu**
 - edit config files
 - install apps like [powershell][6], [gh][7], [nvm][8]
-- build [nano-7.2][4]
+- build [nano-8.3][4] (script checks for latest release of nano)
 - add [nanorc syntax][1]
 
-### V3 - Run all with start-all.sh - [start-all.sh][11]
+### V4 - Run all with start-aio.sh - [start-aio.sh][11]
 ```sh
 curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio.sh | bash
 ```
@@ -47,4 +47,4 @@ Invoke-Expression ([System.Net.WebClient]::new().DownloadString('https://raw.git
 [8]: https://github.com/nvm-sh/nvm
 [9]: https://github.com/Woznet/deploy-nano/blob/main/windows/deploy.ps1
 [10]: https://github.com/nvm-sh/nvm
-[11]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/v3/start-all.sh
+[11]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/v4/start-aio.sh
