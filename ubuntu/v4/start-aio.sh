@@ -222,11 +222,23 @@ install_gh() {
   fi
 }
 
+get_nvm_latest_tag() {
+  local tag
+  tag=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r '.tag_name')
+  if [[ -z "$tag" || "$tag" == "null" ]]; then
+    echo "Error: Could not fetch latest NVM tag." >&2
+    return 1
+  fi
+  echo "$tag"
+}
+
 install_nvm() {
   log 'Starting installation of NVM and Node.js...'
   if [[ ! $(command -v nvm) ]]; then
     log 'Installing NVM...'
-    run_command 'curl --silent -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash'
+    local latest_tag
+    latest_tag=$(get_nvm_latest_tag)
+    run_command "curl --silent -o- 'https://raw.githubusercontent.com/nvm-sh/nvm/${latest_tag}/install.sh' | bash"
     export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "$HOME/.nvm" || printf %s "$XDG_CONFIG_HOME/nvm")"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     log 'NVM installation completed successfully.'
