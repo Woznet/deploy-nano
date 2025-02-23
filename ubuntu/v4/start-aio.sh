@@ -20,7 +20,7 @@ DISABLE_IPV6_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubun
 NANO_SYNTAX_TEMP_PATH='/tmp/nanosyntaxpath.tmp'
 NANO_BUILD_TEMP_PATH='/tmp/nanobuildpath.tmp'
 
-DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/install-docker.sh'
+DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install-docker.sh'
 NANO_SYNTAX_REPO='https://github.com/galenguyer/nano-syntax-highlighting.git'
 
 NVM_DIR="$([ -z '${XDG_CONFIG_HOME-}' ] && printf %s '${HOME}/.nvm' || printf %s '${XDG_CONFIG_HOME}/nvm')"
@@ -124,6 +124,11 @@ source_external_script() {
 }
 
 # Load functions
+set_timezone() {
+  log 'Setting timezone to America/New_York'
+  run_command 'sudo timedatectl set-timezone America/New_York'
+}
+
 check_updates() {
   log 'Starting software update...'
   run_command 'sudo apt update'
@@ -219,14 +224,13 @@ install_gh() {
 
 install_nvm() {
   log 'Starting installation of NVM and Node.js...'
-  if [[ ! $(command -v nvm) && ! $(type -t nvm) == function ]]; then
+  if [[ ! $(command -v nvm) ]]; then
     log 'Installing NVM...'
     run_command 'curl --silent -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash'
     export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "$HOME/.nvm" || printf %s "$XDG_CONFIG_HOME/nvm")"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     log 'NVM installation completed successfully.'
   else
-    echo -e "${ORANGE_RED}Warning: NVM is already installed. Skipping installation.${NC}\n"
     log 'NVM is already installed.'
   fi
 
@@ -429,7 +433,9 @@ should_install_nano() {
 
 configure_nano() {
   log 'Configuring nano...'
-  run_command 'sudo cp /etc/nanorc /etc/nanorc.bak'
+  if [[ -f "/etc/nanorc" ]]; then
+    run_command 'sudo cp /etc/nanorc /etc/nanorc.bak'
+  fi
   run_command "curl --silent $NANORC_URL | sudo tee /etc/nanorc >/dev/null"
   run_command "sudo mv --force \"$(cat "$NANO_SYNTAX_TEMP_PATH")\"/*.nanorc /usr/share/nano/"
   run_command 'sudo chmod --changes =644 /usr/share/nano/*.nanorc'
@@ -460,6 +466,7 @@ run_non_critical() {
 
 # Starting function execution
 log 'Starting critical function execution.'
+set_timezone || log_error 'set_timezone'
 check_updates || log_error 'check_updates'
 install_updates || log_error 'install_updates'
 install_software || log_error 'install_software'
