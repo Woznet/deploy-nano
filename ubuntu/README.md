@@ -1,30 +1,22 @@
-# Config linux box
-- Set config - bashrc, bash_aliases, inputrc, sudoers and others
-- Install pwsh, gh, nvm, node, npm
-- Build nano 7.2 with
-- syntax highlighting from - [galenguyer/nano-syntax-highlighting: Improved Nano Syntax Highlighting Files][4]
+# Linux Box Setup
 
+This script configures a Linux environment by setting up system configurations, installing essential software, and building Nano with syntax highlighting.
 
-
-### Start the beginning - [start script][1]
+## 🚀 **Quick Install**
+Run the following command to start the setup:
 ```sh
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/start.sh | bash
+curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio.sh | bash
 ```
 
-### Skip config files and start with - [install apps][2]
-```sh
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/install-apps.sh | bash
-```
+## 🔹 **Included Features**
+- Configures `.bashrc`, `.bash_aliases`, `inputrc`, and `sudoers`
+- Installs **PowerShell (pwsh), GitHub CLI (gh), Node.js, npm, nvm, Azure CLI**
+- Builds **Nano** with [syntax highlighting][1]
+- Sets up **SSH keys, bash completion, and system tools**
 
-### nano only - [build nano][3]
-```sh
-curl -o- https://github.com/Woznet/deploy-nano/raw/main/ubuntu/build-nano.sh | bash
-```
+## 🔗 **References**
+- [Nano Syntax Highlighting][1]
+- [Nano Editor Git][2]
 
-
-
-[1]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/start.sh
-[2]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/install-apps.sh
-[3]: https://github.com/Woznet/deploy-nano/blob/main/ubuntu/build-nano.sh
-[4]: https://github.com/galenguyer/nano-syntax-highlighting
-
+[1]: https://github.com/galenguyer/nano-syntax-highlighting
+[2]:https://git.savannah.gnu.org/cgit/nano.git/
