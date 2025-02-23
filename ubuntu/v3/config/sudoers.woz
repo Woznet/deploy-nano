@@ -1,6 +1,0 @@
-## Wozdev customizations
-
-Defaults        timestamp_timeout=90
-Defaults        tty_tickets
-Defaults        insults
-ALL             ALL=NOPASSWD:/bin/ls,/bin/mount

@@ -27,13 +27,16 @@ NVM_DIR="$([ -z '${XDG_CONFIG_HOME-}' ] && printf %s '${HOME}/.nvm' || printf %s
 
 # Check for required commands
 check_dependency() {
-  command -v "$1" >/dev/null 2>&1 || { echo -e "${ORANGE_RED}Error: Required command '$1' not found.${NC}\n" >&2; exit 1; }
+  command -v "$1" >/dev/null 2>&1 || {
+    echo -e "${ORANGE_RED}Error: Required command '$1' not found.${NC}\n" >&2
+    exit 1
+  }
 }
 for cmd in curl tee chmod mkdir date sudo; do
   check_dependency "$cmd"
 done
 
-BASE_DIR="$HOME/install-apps"
+BASE_DIR="$HOME/temp"
 LOGFILE="$BASE_DIR/install-apps_$(date +%Y%m%d_%H%M%S).log"
 
 mkdir -p "$BASE_DIR"
@@ -65,7 +68,10 @@ error_exit() {
 run_command() {
   local cmd="$1"
   log "Running command: $cmd"
-  eval "$cmd" || { log_error "Command failed: $cmd"; error_exit; }
+  eval "$cmd" || {
+    log_error "Command failed: $cmd"
+    error_exit
+  }
 }
 
 download_file() {
@@ -335,7 +341,7 @@ remove_nano() {
   log 'Checking if nano is installed...'
   if [[ $(command -v nano) ]]; then
     log 'Nano is installed. Removing nano...'
-    run_command 'sudo apt remove -y nano'
+    run_command 'sudo apt purge -y nano'
     log 'Nano removed successfully.'
   else
     echo -e "${ORANGE_RED}Warning: Nano is not installed. Skipping removal.${NC}\n"
@@ -347,25 +353,25 @@ clone_nano_syntax() {
   log 'Cloning nano syntax highlighting repository...'
   run_command "sudo rm --recursive --force \"$HOME/git/nano-syntax-highlighting\""
   run_command "git clone \"$NANO_SYNTAX_REPO\" \"$HOME/git/nano-syntax-highlighting\""
-  readlink -f "$HOME/git/nano-syntax-highlighting" > "$NANO_SYNTAX_TEMP_PATH"
+  readlink -f "$HOME/git/nano-syntax-highlighting" >"$NANO_SYNTAX_TEMP_PATH"
   log 'Cloned nano syntax highlighting repository successfully.'
 }
 
 get_installed_nano_version() {
-  log "Fetching installed nano version"
+  log "Fetching installed nano version" >/dev/null
   if [[ $(command -v nano) ]]; then
     local installed_nano_version
     installed_nano_version=$(nano --version | head -n1 | awk '{print $4}')
-    log "Installed nano version is $installed_nano_version"
+    log "Installed nano version is $installed_nano_version" >/dev/null
     echo "$installed_nano_version"
   else
-    log "Nano is not installed, returning version 0.0"
+    log "Nano is not installed, returning version 0.0" >/dev/null
     echo "0.0"
   fi
 }
 
 get_latest_nano_version() {
-  log "Fetching latest nano version"
+  log "Fetching latest nano version" >/dev/null
   local nano_version
   nano_version=$(git ls-remote --sort=-'version:refname' --tags https://git.savannah.gnu.org/git/nano.git 2>/dev/null \
     | head -n1 \
@@ -373,9 +379,9 @@ get_latest_nano_version() {
     | sed -E "s/^refs\/tags\/v//; s/\^\{\}$//")
   if [[ -z "$nano_version" ]]; then
     nano_version="8.3"
-    log "Git command failed, falling back to version $nano_version"
+    log "Git command failed, falling back to version $nano_version" >/dev/null
   fi
-  log "Latest nano version is $nano_version"
+  log "Latest nano version is $nano_version" >/dev/null
   echo "$nano_version"
 }
 
@@ -385,7 +391,7 @@ download_nano() {
   run_command 'sudo rm --recursive --force ./nano-*'
   run_command "wget ${NANO_SOURCE_URL}"
   run_command "tar -xf nano-${NANO_LATEST_VERSION}.tar.xz"
-  readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") > "$NANO_BUILD_TEMP_PATH"
+  readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") >"$NANO_BUILD_TEMP_PATH"
   log 'Downloaded and extracted nano source successfully.'
 }
 
@@ -399,25 +405,24 @@ build_nano() {
   log 'Configured, built and installed nano successfully.'
 }
 
-
 should_install_nano() {
   if [ -z "$NANO_INSTALLED_VERSION" ]; then
-    log "Nano is not installed; should install."
+    log "Nano is not installed; should install." >/dev/null
     echo "1"
     return 0
   fi
 
   if [ "$NANO_INSTALLED_VERSION" = "$NANO_LATEST_VERSION" ]; then
-    log "Nano is up-to-date; no need to install."
+    log "Nano is up-to-date; no need to install." >/dev/null
     echo "0"
     return 0
   fi
 
   if [ "$(printf '%s\n%s' "$NANO_INSTALLED_VERSION" "$NANO_LATEST_VERSION" | sort -V | head -n1)" = "$NANO_INSTALLED_VERSION" ]; then
-    log "A newer version of nano is available: $NANO_LATEST_VERSION > $NANO_INSTALLED_VERSION; should install."
+    log "A newer version of nano is available: $NANO_LATEST_VERSION > $NANO_INSTALLED_VERSION; should install." >/dev/null
     echo "1"
   else
-    log "Installed version appears newer than the latest available version; no need to install."
+    log "Installed version appears newer than the latest available version; no need to install." >/dev/null
     echo "0"
   fi
 }
@@ -465,7 +470,6 @@ NANO_LATEST_VERSION=$(get_latest_nano_version)
 SHOULD_INSTALL_NANO=$(should_install_nano)
 NANO_SOURCE_URL="https://nano-editor.org/dist/v8/nano-${NANO_LATEST_VERSION}.tar.xz"
 
-
 log 'Starting non-critical function execution.'
 run_non_critical 'remove_rhythmbox'
 run_non_critical 'configure_dotnet'
@@ -496,20 +500,20 @@ AZ_COMPLETION_URL='https://raw.githubusercontent.com/Azure/azure-cli/dev/az.comp
 
 # Table for command-based completions
 declare -A command_completions=(
-    [op]='op completion bash'
-    [pip]='pip completion --bash'
-    [npm]='npm completion bash'
-    [rclone]='rclone completion bash'
-    [ngrok]='ngrok completion bash'
-    [gh]='gh completion --shell bash'
+  [op]='op completion bash'
+  [pip]='pip completion --bash'
+  [npm]='npm completion bash'
+  [rclone]='rclone completion bash'
+  [ngrok]='ngrok completion bash'
+  [gh]='gh completion --shell bash'
 )
 
 # Table for URL-based completions
 declare -A url_completions=(
-    [tldr]="$TLDR_COMPLETION_URL"
-    [dotnet]="$DOTNET_COMPLETION_URL"
-    [clang]="$CLANG_COMPLETION_URL"
-    [az]="$AZ_COMPLETION_URL"
+  [tldr]="$TLDR_COMPLETION_URL"
+  [dotnet]="$DOTNET_COMPLETION_URL"
+  [clang]="$CLANG_COMPLETION_URL"
+  [az]="$AZ_COMPLETION_URL"
 )
 
 completions_target_dir='/etc/bash_completion.d'
@@ -517,68 +521,68 @@ timestamp=$(date +'%Y%m%d_%H%M%S')
 error_log="error_log_${timestamp}.txt"
 
 if [[ ! -d "$completions_target_dir" ]]; then
-    error_msg="Target directory $completions_target_dir does not exist."
-    echo -e "${ORANGE_RED}${error_msg}${NC}"
-    echo "[$(date)] $error_msg" >>"$error_log"
-    exit 1
+  error_msg="Target directory $completions_target_dir does not exist."
+  echo -e "${ORANGE_RED}${error_msg}${NC}"
+  echo "[$(date)] $error_msg" >>"$error_log"
+  exit 1
 fi
 
 # Process command completions
 for key in "${!command_completions[@]}"; do
-    value="${command_completions[$key]}"
-    output_file="${completions_target_dir}/${key}_completion"
+  value="${command_completions[$key]}"
+  output_file="${completions_target_dir}/${key}_completion"
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Generating command completion for key: $key" | tee -a "$error_log"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Generating command completion for key: $key" | tee -a "$error_log"
 
-    # Ensure the command exists before generating the completion output
-    command_name=$(echo "$value" | awk '{print $1}')
-    if ! command -v "$command_name" &>/dev/null; then
-        error_msg="[$key] Command '$command_name' not found. Skipping."
-        echo -e "${ORANGE_RED}${error_msg}${NC}"
-        echo "[$(date)] $error_msg" >>"$error_log"
-        continue
-    fi
+  # Ensure the command exists before generating the completion output
+  command_name=$(echo "$value" | awk '{print $1}')
+  if ! command -v "$command_name" &>/dev/null; then
+    error_msg="[$key] Command '$command_name' not found. Skipping."
+    echo -e "${ORANGE_RED}${error_msg}${NC}"
+    echo "[$(date)] $error_msg" >>"$error_log"
+    continue
+  fi
 
-    completion_output=$(eval "$value" 2>&1)
-    if [[ -z "$completion_output" ]]; then
-        error_msg="[$key] Command '$value' produced no output. Skipping."
-        echo -e "${ORANGE_RED}${error_msg}${NC}"
-        echo "[$(date)] $error_msg" >>"$error_log"
-        continue
-    fi
+  completion_output=$(eval "$value" 2>&1)
+  if [[ -z "$completion_output" ]]; then
+    error_msg="[$key] Command '$value' produced no output. Skipping."
+    echo -e "${ORANGE_RED}${error_msg}${NC}"
+    echo "[$(date)] $error_msg" >>"$error_log"
+    continue
+  fi
 
-    echo "$completion_output" | sudo tee "$output_file" >/dev/null
-    if ! sudo chmod 644 "$output_file"; then
-        error_msg="[$key] Failed to set permissions on $output_file."
-        echo -e "${ORANGE_RED}${error_msg}${NC}"
-        echo "[$(date)] $error_msg" >>"$error_log"
-        continue
-    fi
+  echo "$completion_output" | sudo tee "$output_file" >/dev/null
+  if ! sudo chmod 644 "$output_file"; then
+    error_msg="[$key] Failed to set permissions on $output_file."
+    echo -e "${ORANGE_RED}${error_msg}${NC}"
+    echo "[$(date)] $error_msg" >>"$error_log"
+    continue
+  fi
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Successfully generated $key completion. Saved to $output_file." | tee -a "$error_log"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Successfully generated $key completion. Saved to $output_file." | tee -a "$error_log"
 done
 
 # Process URL completions
 for key in "${!url_completions[@]}"; do
-    value="${url_completions[$key]}"
-    output_file="${completions_target_dir}/${key}_completion"
+  value="${url_completions[$key]}"
+  output_file="${completions_target_dir}/${key}_completion"
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Downloading URL completion for key: $key from $value" | tee -a "$error_log"
-    if ! sudo curl -s "$value" -o "$output_file"; then
-        error_msg="[$key] Failed to download completion script from $value"
-        echo -e "${ORANGE_RED}${error_msg}${NC}"
-        echo "[$(date)] $error_msg" >>"$error_log"
-        continue
-    fi
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Downloading URL completion for key: $key from $value" | tee -a "$error_log"
+  if ! sudo curl -s "$value" -o "$output_file"; then
+    error_msg="[$key] Failed to download completion script from $value"
+    echo -e "${ORANGE_RED}${error_msg}${NC}"
+    echo "[$(date)] $error_msg" >>"$error_log"
+    continue
+  fi
 
-    if ! sudo chmod 644 "$output_file"; then
-        error_msg="[$key] Failed to set permissions on $output_file."
-        echo -e "${ORANGE_RED}${error_msg}${NC}"
-        echo "[$(date)] $error_msg" >>"$error_log"
-        continue
-    fi
+  if ! sudo chmod 644 "$output_file"; then
+    error_msg="[$key] Failed to set permissions on $output_file."
+    echo -e "${ORANGE_RED}${error_msg}${NC}"
+    echo "[$(date)] $error_msg" >>"$error_log"
+    continue
+  fi
 
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Successfully downloaded $key completion. Saved to $output_file." | tee -a "$error_log"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Successfully downloaded $key completion. Saved to $output_file." | tee -a "$error_log"
 done
 
 echo "All completion scripts have been processed."
