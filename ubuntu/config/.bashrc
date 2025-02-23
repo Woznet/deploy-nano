@@ -195,7 +195,7 @@ HISTFILESIZE=10000
 
 #-+-#-+-#-+-#-+-#
 # SharePoint tenant domain
-# export SPFX_SERVE_TENANT_DOMAIN=Tenant.sharepoint.com
+# export SPFX_SERVE_TENANT_DOMAIN=tenant.sharepoint.com
 #-+-#-+-#-+-#-+-#
 
 #-+-#-+-#-+-#-+-#
