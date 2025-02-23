@@ -4,20 +4,20 @@
 
 # If not running interactively, don't do anything
 case $- in
-*i*) ;;
-*) return ;;
+  *i*) ;;
+  *) return ;;
 esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoredups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+# HISTSIZE=1000
+# HISTFILESIZE=2000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -37,7 +37,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-xterm-color | *-256color) color_prompt=yes ;;
+  xterm-color | *-256color) color_prompt=yes ;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
@@ -58,10 +58,10 @@ fi
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm* | rxvt*)
-  PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-  ;;
-*) ;;
+  xterm* | rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+  *) ;;
 esac
 
 # enable color support of ls and also add handy aliases
@@ -130,26 +130,22 @@ if [[ $(which most) ]]; then
   export PAGER="most"
 fi
 
+### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
+export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
+
 if [[ -d "$HOME/.nvm" ]]; then
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+fi
 
+if command -v npm &>/dev/null; then
+  export PATH="$(npm prefix -g)/bin:$PATH"
   ## npm bash completion
-  if [[ $(which npm) ]]; then
-    source <(npm completion)
-  fi
-
+  source <(npm completion)
   if [[ $(which tldr) ]]; then
-
-    concat_paths() {
-      echo "${1}/${2}"
-    }
-
-    ## tldr bash completion - alt method - handles npm version updates
-    source $(concat_paths $(dirname $(realpath $(which tldr))) 'completion/bash/tldr')
+    source "$(dirname $(realpath $(which tldr)))/completion/bash/tldr"
   fi
-
 fi
 
 ## gh bash completion
@@ -172,9 +168,6 @@ fi
 # mountpoint -q /mnt/u || sudo mount -t drvfs U: /mnt/u -o uid=$(id -u),gid=$(id -g)
 # mountpoint -q /mnt/v || sudo mount -t drvfs V: /mnt/v -o uid=$(id -u),gid=$(id -g)
 #-+-#-+-#-+-#-+-#
-
-### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
-export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 
 #-+-#-+-#-+-#-+-#
 
@@ -201,7 +194,8 @@ HISTSIZE=5000
 HISTFILESIZE=10000
 
 #-+-#-+-#-+-#-+-#
-
+# SharePoint tenant domain
+# export SPFX_SERVE_TENANT_DOMAIN=Tenant.sharepoint.com
 #-+-#-+-#-+-#-+-#
 
 #-+-#-+-#-+-#-+-#

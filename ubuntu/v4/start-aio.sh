@@ -8,6 +8,8 @@ NC='\033[0m'
 # Configuration variables shared across all scripts
 DOTNET_CONFIG_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-mspkgs'
 DOTNET_PROFILE_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-cli-config.sh'
+PWSH_PROFILE_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/profile.sh'
+PWSH_CONFIG_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/Invoke-ConfigPwsh.ps1'
 BASHRC_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bashrc'
 BASH_ALIASES_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bash_aliases'
 SUDOERS_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/sudoers.woz'
@@ -70,29 +72,25 @@ download_file() {
   local url="$1"
   local dest="$2"
   log "Downloading $url to $dest"
-  if [[ "$dest" == /etc/* ]]; then
-    if ! curl --silent --fail "$url" | sudo tee "$dest" >/dev/null; then
-      echo -e "${ORANGE_RED}Failed to download $url to $dest${NC}\n"
-      log_error "Failed to download $url"
-      error_exit
-    fi
-    if ! sudo chmod 644 "$dest"; then
-      echo -e "${ORANGE_RED}Failed to set permissions for $dest${NC}\n"
-      log_error "Failed to set permissions for $dest"
-      error_exit
-    fi
+  # Determine if sudo is needed (check write permission)
+  if [[ ! -w "$(dirname "$dest")" ]]; then
+    use_sudo="sudo"
   else
-    if ! curl --silent --fail "$url" | tee "$dest" >/dev/null; then
-      echo -e "${ORANGE_RED}Failed to download $url to $dest${NC}\n"
-      log_error "Failed to download $url"
-      error_exit
-    fi
-    if ! chmod 644 "$dest"; then
-      echo -e "${ORANGE_RED}Failed to set permissions for $dest${NC}\n"
-      log_error "Failed to set permissions for $dest"
-      error_exit
-    fi
+    use_sudo=""
   fi
+  # Download file and handle errors
+  if ! curl --silent --fail "$url" | $use_sudo tee "$dest" >/dev/null; then
+    echo -e "${ORANGE_RED}Failed to download $url to $dest${NC}\n"
+    log_error "Failed to download $url"
+    error_exit
+  fi
+  # Set permissions
+  if ! $use_sudo chmod 644 "$dest"; then
+    echo -e "${ORANGE_RED}Failed to set permissions for $dest${NC}\n"
+    log_error "Failed to set permissions for $dest"
+    error_exit
+  fi
+  # Check if file is empty
   if [ ! -s "$dest" ]; then
     echo -e "${ORANGE_RED}Downloaded file $dest is empty.${NC}\n"
     log_error "Downloaded file $dest is empty."
@@ -229,7 +227,7 @@ install_nvm() {
   if [[ ! $(command -v node) ]]; then
     log 'Installing Node.js...'
     source "$HOME/.bashrc"
-    run_command 'nvm install --lts'
+    run_command 'nvm install --lts --latest-npm --default'
     run_command 'nvm use default'
     log 'Node.js installation completed successfully.'
   else
@@ -257,6 +255,8 @@ install_pwsh() {
     run_command 'sudo apt update'
     run_command 'rm -v packages-microsoft-prod.deb'
     run_command 'sudo apt install -y powershell'
+    run_command "sudo pwsh -NoProfile -Command \"& {Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
+    download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
     log 'PowerShell installation completed successfully.'
   else
     echo -e "${ORANGE_RED}Warning: PowerShell is already installed. Skipping installation.${NC}\n"
