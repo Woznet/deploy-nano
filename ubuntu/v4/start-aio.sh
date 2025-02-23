@@ -255,7 +255,7 @@ install_pwsh() {
     run_command 'sudo apt update'
     run_command 'rm -v packages-microsoft-prod.deb'
     run_command 'sudo apt install -y powershell'
-    run_command "sudo pwsh -NoProfile -Command \"& {Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
+    run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
     download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
     log 'PowerShell installation completed successfully.'
   else
