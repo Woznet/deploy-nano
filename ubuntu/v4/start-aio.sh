@@ -23,8 +23,6 @@ NANO_BUILD_TEMP_PATH='/tmp/nanobuildpath.tmp'
 DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install-docker.sh'
 NANO_SYNTAX_REPO='https://github.com/galenguyer/nano-syntax-highlighting.git'
 
-NVM_DIR="$([ -z '${XDG_CONFIG_HOME-}' ] && printf %s '${HOME}/.nvm' || printf %s '${XDG_CONFIG_HOME}/nvm')"
-
 # Check for required commands
 check_dependency() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -36,10 +34,10 @@ for cmd in curl tee chmod mkdir date sudo; do
   check_dependency "$cmd"
 done
 
-BASE_DIR="$HOME/temp"
-LOGFILE="$BASE_DIR/install-apps_$(date +%Y%m%d_%H%M%S).log"
+# BASE_DIR="$HOME/temp"
+LOGFILE="$HOME/temp/deploy-config_$(date +%Y%m%d_%H%M%S).log"
 
-mkdir -p "$BASE_DIR"
+mkdir --parents "$(dirname $LOGFILE)"
 touch "$LOGFILE"
 chmod 0644 "$LOGFILE"
 
@@ -222,51 +220,7 @@ install_gh() {
   fi
 }
 
-get_nvm_latest_tag() {
-  local tag
-  tag=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r '.tag_name')
-  if [[ -z "$tag" || "$tag" == "null" ]]; then
-    echo "Error: Could not fetch latest NVM tag." >&2
-    return 1
-  fi
-  echo "$tag"
-}
 
-install_nvm() {
-  log 'Starting installation of NVM and Node.js...'
-  if [[ ! $(command -v nvm) ]]; then
-    log 'Installing NVM...'
-    local latest_tag
-    latest_tag=$(get_nvm_latest_tag)
-    run_command "curl --silent -o- 'https://raw.githubusercontent.com/nvm-sh/nvm/${latest_tag}/install.sh' | bash"
-    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "$HOME/.nvm" || printf %s "$XDG_CONFIG_HOME/nvm")"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-    log 'NVM installation completed successfully.'
-  else
-    log 'NVM is already installed.'
-  fi
-
-  if [[ ! $(command -v node) ]]; then
-    log 'Installing Node.js...'
-    source "$HOME/.bashrc"
-    run_command 'nvm install --lts --latest-npm --default'
-    run_command 'nvm use default'
-    log 'Node.js installation completed successfully.'
-  else
-    echo -e "${ORANGE_RED}Warning: Node.js is already installed. Skipping installation.${NC}\n"
-    log 'Node.js is already installed.'
-  fi
-
-  if [[ ! $(command -v tldr) ]]; then
-    log 'Installing tldr...'
-    source "$HOME/.bashrc"
-    run_command 'npm install -g tldr'
-    log 'tldr installation completed successfully.'
-  else
-    echo -e "${ORANGE_RED}Warning: tldr is already installed. Skipping installation.${NC}\n"
-    log 'tldr is already installed.'
-  fi
-}
 
 install_pwsh() {
   log 'Starting installation of PowerShell...'
@@ -333,9 +287,9 @@ install_1password() {
   if [[ ! $(command -v 1password) || ! $(command -v op) ]]; then
     run_command 'curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --yes --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg'
     run_command 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | sudo tee /etc/apt/sources.list.d/1password.list'
-    run_command 'sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/'
+    run_command 'sudo mkdir --parents /etc/debsig/policies/AC2D62742012EA22/'
     run_command 'curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol'
-    run_command 'sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22'
+    run_command 'sudo mkdir --parents /usr/share/debsig/keyrings/AC2D62742012EA22'
     run_command 'curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --yes --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg'
     run_command 'sudo apt update'
     run_command 'sudo apt install -y 1password'
@@ -494,7 +448,7 @@ run_non_critical 'remove_rhythmbox'
 run_non_critical 'configure_dotnet'
 run_non_critical 'generate_ssh_keys'
 run_non_critical 'install_gh'
-run_non_critical 'install_nvm'
+# run_non_critical 'install_nvm'
 run_non_critical 'install_pwsh'
 run_non_critical 'install_vscode'
 run_non_critical 'install_1password'
