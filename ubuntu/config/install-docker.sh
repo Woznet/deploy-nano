@@ -27,10 +27,15 @@ if [[ ! $(which docker) ]]; then
     docker run hello-world
 
     # Get Docker Desktop download url
-    URL_FILE="https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/docker-desktop-url.txt"
-    DOCKER_DESKTOP_URL=$(curl -sL $URL_FILE)
+    DOCKER_DESKTOP_URL="https://desktop.docker.com/linux/main/amd64/docker-desktop-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64"
     # Download Docker Desktop deb file
-    curl -L $DOCKER_DESKTOP_URL -o docker-desktop.deb
+    curl -L $DOCKER_DESKTOP_URL -o docker-desktop-amd64.deb
     # Install Docker Desktop
-    # sudo apt install ./docker-desktop.deb
+
+    # Define styles and colors
+    PASTEL_LIGHT_GREEN='\033[38;2;144;238;144m'  # LightGreen RGB (144,238,144)
+    UNDERLINE='\033[4m'
+    NC='\033[0m'
+    echo -e "${UNDERLINE}${PASTEL_LIGHT_GREEN}Use \"sudo apt install ./docker-desktop-amd64.deb\" to install Docker Desktop${NC}"
+    # sudo apt install ./docker-desktop-amd64.deb
 fi
