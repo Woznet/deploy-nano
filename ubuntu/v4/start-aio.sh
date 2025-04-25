@@ -30,11 +30,11 @@ check_dependency() {
     exit 1
   }
 }
+
 for cmd in curl tee chmod mkdir date sudo; do
   check_dependency "$cmd"
 done
 
-# BASE_DIR="$HOME/temp"
 LOGFILE="$HOME/temp/deploy-config_$(date +%Y%m%d_%H%M%S).log"
 
 mkdir --parents "$(dirname $LOGFILE)"
@@ -48,6 +48,7 @@ error_handler() {
   log_error "Error occurred at or near line ${line_no}. Exit status: ${exit_status}"
   exit $exit_status
 }
+
 trap 'error_handler $LINENO' ERR
 
 log() {
@@ -55,14 +56,17 @@ log() {
   local level="${2:-INFO}"
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] [$level] $message" | tee -a "$LOGFILE"
 }
+
 log_error() {
   log "$1" "ERROR"
 }
+
 error_exit() {
   echo -e "${ORANGE_RED}Error occurred. Exiting.${NC}\n"
   log_error 'Error occurred. Exiting.'
   exit 1
 }
+
 run_command() {
   local cmd="$1"
   log "Running command: $cmd"
@@ -220,8 +224,6 @@ install_gh() {
   fi
 }
 
-
-
 install_pwsh() {
   log 'Starting installation of PowerShell...'
   if [[ ! $(command -v pwsh) ]]; then
@@ -243,7 +245,7 @@ install_pwsh() {
 install_vscode() {
   log 'Starting installation of Visual Studio Code...'
   if [[ ! $(command -v code) ]]; then
-    run_command 'sudo apt-get install -y wget gpg'
+    run_command 'sudo apt install -y wget gpg'
     run_command 'wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --yes --dearmor >packages.microsoft.gpg'
     run_command 'sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg'
     run_command 'sudo sh -c "echo '\''deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main'\'' > /etc/apt/sources.list.d/vscode.list"'
@@ -475,7 +477,7 @@ AZ_COMPLETION_URL='https://raw.githubusercontent.com/Azure/azure-cli/dev/az.comp
 declare -A command_completions=(
   [op]='op completion bash'
   [pip]='pip completion --bash'
-  [npm]='npm completion bash'
+  # [npm]='npm completion bash'
   [rclone]='rclone completion bash'
   [ngrok]='ngrok completion bash'
   [gh]='gh completion --shell bash'
