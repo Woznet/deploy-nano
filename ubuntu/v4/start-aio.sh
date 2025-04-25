@@ -68,12 +68,20 @@ error_exit() {
 }
 
 run_command() {
-  local cmd="$1"
-  log "Running command: $cmd"
-  eval "$cmd" || {
-    log_error "Command failed: $cmd"
-    error_exit
-  }
+  if [[ $# -eq 1 ]]; then
+    local cmd="$1"
+    log "Running command (string): $cmd"
+    eval "$cmd" || {
+      log_error "Command failed: $cmd"
+      error_exit
+    }
+  else
+    log "Running command (args): $*"
+    "$@" || {
+      log_error "Command failed: $*"
+      error_exit
+    }
+  fi
 }
 
 download_file() {
@@ -228,7 +236,7 @@ install_pwsh() {
   log 'Starting installation of PowerShell...'
   if [[ ! $(command -v pwsh) ]]; then
     run_command 'sudo apt update'
-    run_command 'wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb'
+    run_command 'wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"'
     run_command 'sudo dpkg -i packages-microsoft-prod.deb'
     run_command 'sudo apt update'
     run_command 'rm -v packages-microsoft-prod.deb'
@@ -362,7 +370,7 @@ download_nano() {
   cd "$HOME/temp"
   run_command 'sudo rm --recursive --force ./nano-*'
   run_command "wget ${NANO_SOURCE_URL}"
-  run_command "tar -xf nano-${NANO_LATEST_VERSION}.tar.xz"
+  run_command "tar -xfz nano-${NANO_LATEST_VERSION}.tar.gz"
   readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") >"$NANO_BUILD_TEMP_PATH"
   log 'Downloaded and extracted nano source successfully.'
 }
@@ -443,7 +451,7 @@ configure_userenv || log_error 'configure_userenv'
 NANO_INSTALLED_VERSION=$(get_installed_nano_version)
 NANO_LATEST_VERSION=$(get_latest_nano_version)
 SHOULD_INSTALL_NANO=$(should_install_nano)
-NANO_SOURCE_URL="https://nano-editor.org/dist/v8/nano-${NANO_LATEST_VERSION}.tar.xz"
+NANO_SOURCE_URL="https://nano-editor.org/dist/v8/nano-${NANO_LATEST_VERSION}.tar.gz"
 
 log 'Starting non-critical function execution.'
 run_non_critical 'remove_rhythmbox'
