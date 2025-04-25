@@ -378,7 +378,7 @@ download_nano() {
   cd "$HOME/temp"
   run_command 'sudo rm --recursive --force ./nano-*'
   run_command 'wget "${NANO_SOURCE_URL}"'
-  run_command 'tar -xfz "nano-${NANO_LATEST_VERSION}.tar.gz"'
+  run_command 'tar xfz "nano-${NANO_LATEST_VERSION}.tar.gz"'
   readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") >"$NANO_BUILD_TEMP_PATH"
   log 'Downloaded and extracted nano source successfully.'
 }
