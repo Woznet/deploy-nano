@@ -351,16 +351,24 @@ get_installed_nano_version() {
 }
 
 get_latest_nano_version() {
+  if [[ -n "$NANO_VERSION" ]]; then
+    log "Using NANO_VERSION environment variable: $NANO_VERSION" >/dev/null
+    echo "$NANO_VERSION"
+    return
+  fi
+
   log "Fetching latest nano version" >/dev/null
   local nano_version
-  nano_version=$(git ls-remote --sort=-'version:refname' --tags https://git.savannah.gnu.org/git/nano.git 2>/dev/null \
-    | head -n1 \
-    | awk '{print $2}' \
-    | sed -E "s/^refs\/tags\/v//; s/\^\{\}$//")
+  nano_version=$(git ls-remote --sort=-'version:refname' --tags https://git.savannah.gnu.org/git/nano.git 2>/dev/null |
+    head -n1 |
+    awk '{print $2}' |
+    sed -E "s/^refs\/tags\/v//; s/\^\{\}$//")
+
   if [[ -z "$nano_version" ]]; then
-    nano_version="8.3"
+    nano_version="8.4"
     log "Git command failed, falling back to version $nano_version" >/dev/null
   fi
+
   log "Latest nano version is $nano_version" >/dev/null
   echo "$nano_version"
 }
@@ -369,8 +377,8 @@ download_nano() {
   log 'Downloading nano source...'
   cd "$HOME/temp"
   run_command 'sudo rm --recursive --force ./nano-*'
-  run_command "wget ${NANO_SOURCE_URL}"
-  run_command "tar -xfz nano-${NANO_LATEST_VERSION}.tar.gz"
+  run_command 'wget "${NANO_SOURCE_URL}"'
+  run_command 'tar -xfz "$HOME/temp/nano-${NANO_LATEST_VERSION}.tar.gz"'
   readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") >"$NANO_BUILD_TEMP_PATH"
   log 'Downloaded and extracted nano source successfully.'
 }
