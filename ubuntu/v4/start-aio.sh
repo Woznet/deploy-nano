@@ -235,8 +235,9 @@ install_gh() {
 install_pwsh() {
   log 'Starting installation of PowerShell...'
   if [[ ! $(command -v pwsh) ]]; then
+    run_command 'source /etc/os-release'
     run_command 'sudo apt update'
-    run_command 'wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"'
+    run_command 'wget -q "https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb"'
     run_command 'sudo dpkg -i packages-microsoft-prod.deb'
     run_command 'sudo apt update'
     run_command 'rm -v packages-microsoft-prod.deb'
