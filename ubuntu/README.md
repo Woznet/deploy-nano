@@ -3,9 +3,16 @@
 This script configures a Linux environment by setting up system configurations, installing essential software, and building Nano with syntax highlighting.
 
 ## 🚀 **Quick Install**
-Run the following command to start the setup:
+Run the following command to start the full setup:
 ```sh
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio.sh | bash
+curl -sSL -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio.sh | bash
+```
+
+## **Minimal Install**
+Run the following command to start the minimum setup:
+- Does not include vscode, 1passwozd, az, ngrok, docker install script, dotnet
+```sh
+curl -sSL -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio-min.sh | bash
 ```
 
 ## 🔹 **Included Features**
