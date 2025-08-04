@@ -139,14 +139,21 @@ if [[ -d "$HOME/.nvm" ]]; then
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 fi
 
-if command -v npm &>/dev/null; then
-  export PATH="$(npm prefix -g)/bin:$PATH"
-  ## npm bash completion
-  source <(npm completion)
-  if [[ $(which tldr) ]]; then
-    source "$(dirname $(realpath $(which tldr)))/completion/bash/tldr"
+
+for npm_path in $(which -a npm | grep -v '^/mnt/c/Program Files/nodejs/' | uniq); do
+  node_path="$(dirname "$npm_path")/node"
+  if [[ -x "$node_path" ]]; then
+    echo "Using npm: $npm_path ($( "$npm_path" --version ))"
+    echo "Using node: $node_path ($( "$node_path" --version ))"
+    export PATH="$(npm prefix -g)/bin:$PATH"
+    ## npm bash completion
+    source <("$npm_path" completion)
+    if [[ $(which tldr) ]]; then
+      source "$(dirname $(realpath $(which tldr)))/completion/bash/tldr"
+    fi
+    break
   fi
-fi
+done
 
 ## gh bash completion
 if [[ $(which gh) ]]; then
