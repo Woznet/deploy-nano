@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [[ ! $(which docker) ]]; then
     # Add Docker's official GPG key:

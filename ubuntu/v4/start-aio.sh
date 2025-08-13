@@ -8,6 +8,7 @@ NC='\033[0m'
 # Configuration variables shared across all scripts
 DOTNET_CONFIG_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-mspkgs'
 DOTNET_PROFILE_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/dotnet-cli-config.sh'
+PWSH_GITHUB_RELEASE_URL='https://github.com/PowerShell/PowerShell/releases/download/v7.5.2/powershell_7.5.2-1.deb_amd64.deb'
 PWSH_PROFILE_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/profile.ps1'
 PWSH_CONFIG_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/Invoke-ConfigPwsh.ps1'
 BASHRC_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/.bashrc'
@@ -20,7 +21,11 @@ DISABLE_IPV6_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubun
 NANO_SYNTAX_TEMP_PATH='/tmp/nanosyntaxpath.tmp'
 NANO_BUILD_TEMP_PATH='/tmp/nanobuildpath.tmp'
 
-DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install-docker.sh'
+DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install/install-docker.sh'
+NGROK_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install/install-ngrok.sh'
+VSCODE_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install/install-vscode.sh'
+AZ_CLI_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install/install-az-cli.sh'
+NVM_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install/install-nvm.sh'
 NANO_SYNTAX_REPO='https://github.com/galenguyer/nano-syntax-highlighting.git'
 
 # Check for required commands
@@ -153,7 +158,7 @@ install_updates() {
 
 install_software() {
   log 'Starting installation of required software packages...'
-  run_command 'sudo apt install -y apt-transport-https curl software-properties-common git-all autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
+  run_command 'sudo apt install -y apt-transport-https curl software-properties-common git-all autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free 7zip 7zip-rar 7zip-standalone'
   log 'Software installation completed successfully.'
 }
 
@@ -183,7 +188,7 @@ configure_userenv() {
   download_file "$DISABLE_IPV6_URL" '/etc/sysctl.d/20-disable-ipv6.conf'
 
   log 'Creating user directories...'
-  for dir in "$HOME/git" "$HOME/temp" "$HOME/dev"; do
+  for dir in "$HOME/git" "$HOME/temp/install-script" "$HOME/dev"; do
     [ -d "$dir" ] || run_command "mkdir -v '$dir'"
   done
 
@@ -235,61 +240,17 @@ install_gh() {
 install_pwsh() {
   log 'Starting installation of PowerShell...'
   if [[ ! $(command -v pwsh) ]]; then
-    run_command 'source /etc/os-release'
     run_command 'sudo apt update'
-    run_command 'wget -q "https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb"'
-    run_command 'sudo dpkg -i packages-microsoft-prod.deb'
-    run_command 'sudo apt update'
-    run_command 'rm -v packages-microsoft-prod.deb'
-    run_command 'sudo apt install -y powershell'
+    run_command 'sudo apt get install -y wget curl'
+    run_command "wget -q \"$PWSH_GITHUB_RELEASE_URL\""
+    run_command 'sudo dpkg -i powershell_7.5.2-1.deb_amd64.deb'
+    run_command 'sudo apt get install -f'
     run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
     download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
     log 'PowerShell installation completed successfully.'
   else
     echo -e "${ORANGE_RED}Warning: PowerShell is already installed. Skipping installation.${NC}\n"
     log 'PowerShell is already installed.'
-  fi
-}
-
-install_vscode() {
-  log 'Starting installation of Visual Studio Code...'
-  if [[ ! $(command -v code) ]]; then
-    run_command 'sudo apt install -y wget gpg'
-    run_command 'wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --yes --dearmor >packages.microsoft.gpg'
-    run_command 'sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg'
-    run_command 'sudo sh -c "echo '\''deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main'\'' > /etc/apt/sources.list.d/vscode.list"'
-    run_command 'rm -f packages.microsoft.gpg'
-    run_command 'sudo apt update'
-    run_command 'sudo apt install -y code'
-    log 'Visual Studio Code installation completed successfully.'
-  else
-    echo -e "${ORANGE_RED}Warning: Visual Studio Code is already installed. Skipping installation.${NC}\n"
-    log 'Visual Studio Code is already installed.'
-  fi
-}
-
-install_az() {
-  log 'Starting installation of Azure Cli...'
-  if [[ ! $(command -v az) ]]; then
-    run_command 'curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash'
-    log 'Azure Cli installation completed successfully.'
-  else
-    echo -e "${ORANGE_RED}Warning: Azure Cli is already installed. Skipping installation.${NC}\n"
-    log 'Azure Cli is already installed.'
-  fi
-}
-
-install_ngrok() {
-  log 'Starting installation of ngrok...'
-  if [[ ! $(command -v ngrok) ]]; then
-    run_command 'curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null'
-    run_command 'echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list'
-    run_command 'sudo apt update'
-    run_command 'sudo apt install -y ngrok'
-    log 'ngrok installation completed successfully.'
-  else
-    echo -e "${ORANGE_RED}Warning: ngrok is already installed. Skipping installation.${NC}\n"
-    log 'ngrok is already installed.'
   fi
 }
 
@@ -312,10 +273,25 @@ install_1password() {
   fi
 }
 
-save_docker() {
+save_install_scripts() {
   log 'Saving Docker install script...'
-  download_file "$DOCKER_INSTALL_SCRIPT_URL" "$HOME/temp/install-docker.sh"
+  download_file "$DOCKER_INSTALL_SCRIPT_URL" "$HOME/temp/install-script/install-docker.sh"
   log 'Docker install script saved successfully.'
+
+  log 'Saving ngrok install script...'
+  download_file "$NGROK_INSTALL_SCRIPT_URL" "$HOME/temp/install-script/install-ngrok.sh"
+  log 'ngrok install script saved successfully.'
+
+  log 'Saving Visual Studio Code install script...'
+  download_file "$VSCODE_INSTALL_SCRIPT_URL" "$HOME/temp/install-script/install-vscode.sh"
+  log 'Visual Studio Code install script saved successfully.'
+
+  log 'Saving Azure CLI install script...'
+  download_file "$AZ_CLI_INSTALL_SCRIPT_URL" "$HOME/temp/install-script/install-az-cli.sh"
+  log 'Azure CLI install script saved successfully.'
+
+  log 'Saving nvm install script...'
+  download_file "$NVM_INSTALL_SCRIPT_URL" "$HOME/temp/install-script/install-nvm.sh"
 }
 
 remove_nano() {
@@ -469,11 +445,11 @@ run_non_critical 'generate_ssh_keys'
 run_non_critical 'install_gh'
 # run_non_critical 'install_nvm'
 run_non_critical 'install_pwsh'
-run_non_critical 'install_vscode'
+# run_non_critical 'install_vscode'
 run_non_critical 'install_1password'
-run_non_critical 'install_az'
-run_non_critical 'install_ngrok'
-run_non_critical 'save_docker'
+# run_non_critical 'install_az'
+# run_non_critical 'install_ngrok'
+run_non_critical 'save_install_scripts'
 
 if [ "$SHOULD_INSTALL_NANO" = "1" ]; then
   run_non_critical 'remove_nano'
