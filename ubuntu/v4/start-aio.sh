@@ -189,7 +189,7 @@ configure_userenv() {
 
   log 'Creating user directories...'
   for dir in "$HOME/git" "$HOME/temp/install-script" "$HOME/dev"; do
-    [ -d "$dir" ] || run_command "mkdir -v '$dir'"
+    [ -d "$dir" ] || run_command "mkdir --parents --verbose '$dir'"
   done
 
   log 'User environment configuration setup completed successfully.'
