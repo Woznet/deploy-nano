@@ -241,10 +241,10 @@ install_pwsh() {
   log 'Starting installation of PowerShell...'
   if [[ ! $(command -v pwsh) ]]; then
     run_command 'sudo apt update'
-    run_command 'sudo apt get install -y wget curl'
+    run_command 'sudo apt install -y wget curl'
     run_command "wget -q \"$PWSH_GITHUB_RELEASE_URL\""
     run_command 'sudo dpkg -i powershell_7.5.2-1.deb_amd64.deb'
-    run_command 'sudo apt get install -f'
+    run_command 'sudo apt install -f'
     run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
     download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
     log 'PowerShell installation completed successfully.'
