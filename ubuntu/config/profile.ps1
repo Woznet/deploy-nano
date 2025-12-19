@@ -1,83 +1,102 @@
 $FormatEnumerationLimit = -1
 
 if (-not ($env:GHRUNNING)) {
-    Import-Module -Global PSReadLine
-    Import-Module -Global Az.Tools.Predictor
-
-    $Params = @{
-        EditMode = 'Windows'
-        ShowToolTips = $true
-        ContinuationPrompt = '  '
-        BellStyle = 'Visual'
-        PredictionViewStyle = 'ListView'
-        HistorySearchCursorMovesToEnd = $true
-        HistorySaveStyl = 'SaveIncrementally'
-        PredictionSource = 'HistoryAndPlugin'
+    $PSDefaultParameterValues.Add('Update-Help:UICulture', 'en-US')
+    $PSDefaultParameterValues.Add('Update-Help:Force', $true)
+    try {
+        Import-Module -Global Az.Tools.Predictor -ErrorAction Stop
+    }
+    catch {
+        Write-Warning 'Az.Tools.Predictor could not be imported'
     }
 
-    Set-PSReadLineOption @Params
+    try {
+        if (-not (Get-Module PSReadLine)) { Import-Module -Global PSReadLine}
+    }
+    catch {
+        Write-Error -ErrorRecord $_;
+    }
 
-    Remove-PSReadLineKeyHandler -Chord 'Shift+Tab'
-    Set-PSReadLineKeyHandler -Function MenuComplete -Chord 'Shift+Tab'
+    $Params = @{
+        EditMode = 'Windows';
+        ShowToolTips = $true;
+        ContinuationPrompt = '  ';
+        BellStyle = 'Visual';
+        PredictionViewStyle = 'ListView';
+        HistorySearchCursorMovesToEnd = $true;
+        HistorySaveStyl = 'SaveIncrementally';
+        PredictionSource = 'HistoryAndPlugin';
+    }
 
-    function GetShortPath {
+    Set-PSReadLineOption @Params;
+
+    Remove-PSReadLineKeyHandler -Chord 'Shift+Tab';
+    Set-PSReadLineKeyHandler -Function MenuComplete -Chord 'Shift+Tab';
+
+    function Get-ShortPath {
         [CmdletBinding()]
+        [Alias('GetShortPath')]
+        [OutputType([string])]
         param(
+            [Parameter(ValueFromPipeline)]
             [ValidateScript({
-                    if (-not ($_ | Test-Path -IsValid -PathType Container)) {
+                    if (-not (Test-Path $_ -PathType Container)) {
                         throw ('{0} - Invalid Directory Path' -f $_)
                     }
-                    return $true
+                    $true
                 })]
-            [Parameter(ValueFromPipeline)]
             [string]$Path = $PWD.Path
         )
         process {
-            if ($Host.UI.RawUI.BufferSize.Width) {
-                $MaxPromptPath = [int]($Host.UI.RawUI.BufferSize.Width / 3)
+            $Path = Convert-Path $Path
+            $Platform = [System.Environment]::OSVersion.Platform
+            $IsWinOS = $Platform -eq [PlatformID]::Win32NT
+            $MaxLen = if ($Host.UI.RawUI.BufferSize.Width) {[int]($Host.UI.RawUI.BufferSize.Width / 4)} else {48}
+            $DSC = [System.IO.Path]::DirectorySeparatorChar
+            $CurrPath = if ($Path -like '*::*') {$Path.Substring($Path.IndexOf('::') + 2).TrimEnd($DSC)} else {$Path.TrimEnd($DSC)}
+            if ($CurrPath.Length -le ($MaxLen + 4)) {
+                return $CurrPath;
             }
             else {
-                $MaxPromptPath = 48
-            }
-            $CurrPath = $Path -replace '^[^:]+::'
-            $DSC = [System.IO.Path]::DirectorySeparatorChar
+                $Parts = $CurrPath -split [regex]::Escape($DSC)
+                $Parts = $CurrPath.Split($DSC, [System.StringSplitOptions]::RemoveEmptyEntries)
+                if ($IsWinOS) {
+                    $Prefix = $Parts[0];
+                    $Budget = $MaxLen - ($Prefix.Length + 3);
+                }
+                else {
+                    $Budget = $MaxLen - ($Prefix.Length + 1);
+                }
+                $Suffix = [System.Text.StringBuilder]::new()
 
-            if ($CurrPath.Length -gt ($MaxPromptPath + 4)) {
-                $PathParts = $CurrPath.Split($DSC)
-                $EndPath = [System.Text.StringBuilder]::new()
-                $ShortPath = [System.Text.StringBuilder]::new()
-
-                for ($i = $PathParts.Length - 1; $i -gt 0; $i--) {
-                    $TempPart = $PathParts[$i]
-                    $TempPath = [System.IO.Path]::Combine($EndPath.ToString(), $TempPart)
-                    if ($TempPath.Length -lt $MaxPromptPath) {
-                        [void]$EndPath.Insert(0, $TempPart + $DSC)
-                    }
-                    else {
+                for ($i = $Parts.Length - 1; $i -gt 0; $i--) {
+                    $Segment = $Parts[$i]
+                    if ($Suffix.Length + $Segment.Length + 1 -gt $Budget) {
+                        if ($Suffix.Length -eq 0) {
+                            $null = $Suffix.Insert(0, ('{0}{1}' -f $DSC, $Segment))
+                        }
                         break
                     }
+                    $null = $Suffix.Insert(0, ('{0}{1}' -f $DSC, $Segment))
                 }
-                $null = $ShortPath.Append($PathParts[0])
-                $null = $ShortPath.Append($DSC)
-                $null = $ShortPath.Append([char]::ConvertFromUtf32(8230))
-                $null = $ShortPath.Append($DSC)
-                $null = $ShortPath.Append($EndPath.ToString().TrimEnd($DSC))
-                $GSPath = $ShortPath.ToString()
+                return ('{0}{1}{2}{3}{4}' -f $Prefix, $DSC, [char]0x2026, $Suffix.ToString(), $DSC);
             }
-            else {
-                $GSPath = $CurrPath
-            }
-            return $GSPath
         }
     }
     try {
-        $RunColorsPath = Join-Path $PSScriptRoot 'runtime-colors.txt' -Resolve -ErrorAction Stop
+        $RunColorsPath = [System.IO.Path]::Combine($PSScriptRoot, 'runtime-colors.txt')
         $RCList = (Get-Content -Raw $RunColorsPath -ErrorAction Stop).Split(',')
     }
     catch {
         Write-Warning ('Unable to load runtime colors from "{0}"' -f $RunColorsPath)
-        $RunColorsUrl = 'https://gist.githubusercontent.com/Woznet/468915d9d3fafde75f64f0442a74085c/raw/32149b346123813f82434a814bad43f7a6d98340/runtime-colors.txt'
+        $RunColorsUrl = 'https://gist.githubusercontent.com/Woznet/468915d9d3fafde75f64f0442a74085c/raw/9846a0a122bd63e45a6d55c5efa003a30756f1a5/runtime-colors.txt'
         $RCList = (Invoke-RestMethod -Uri $RunColorsUrl).Split(',')
+        try {
+            ($RCList -join ',') | Out-File -FilePath $RunColorsPath -Encoding utf8NoBOM -ErrorAction Stop
+        }
+        catch {
+            Write-Warning ('Unable to save runtime colors to "{0}"' -f $RunColorsPath)
+        }
     }
     finally {
         Remove-Variable RunColorsPath, RunColorsUrl -Force -ErrorAction Ignore
@@ -137,10 +156,11 @@ if (-not ($env:GHRUNNING)) {
             $null = $SB.Append(('{0} ' -f ('>' * ($NestedPromptLevel + 1))))
             ### Prompt - End
 
-            return $SB.ToString()
+            return $SB.ToString();
         }
         catch {
-            'PS {0}{1} ' -f $ExecutionContext.SessionState.Path.CurrentLocation, ('>' * ($NestedPromptLevel + 1));
+            Write-Error -ErrorRecord $_;
+            return ('PS {0}{1} ' -f $ExecutionContext.SessionState.Path.CurrentLocation, ('>' * ($NestedPromptLevel + 1)));
         }
     }
 }
