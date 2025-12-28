@@ -23,6 +23,8 @@ NANO_BUILD_TEMP_PATH='/tmp/nanobuildpath.tmp'
 DOCKER_INSTALL_SCRIPT_URL='https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/config/install-docker.sh'
 NANO_SYNTAX_REPO='https://github.com/galenguyer/nano-syntax-highlighting.git'
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Check for required commands
 check_dependency() {
     command -v "$1" >/dev/null 2>&1 || {
@@ -37,7 +39,7 @@ done
 
 LOGFILE="$HOME/temp/deploy-config_$(date +%Y%m%d_%H%M%S).log"
 
-mkdir --parents "$(dirname $LOGFILE)"
+mkdir --parents "$(dirname "$LOGFILE")"
 touch "$LOGFILE"
 chmod 0644 "$LOGFILE"
 
@@ -141,19 +143,19 @@ set_timezone() {
 
 check_updates() {
     log 'Starting software update...'
-    run_command 'sudo apt update'
+    run_command 'sudo apt update -qq'
     log 'Software update completed successfully.'
 }
 
 install_updates() {
     log 'Starting full upgrade...'
-    run_command 'sudo apt full-upgrade -y'
+    run_command 'sudo apt full-upgrade -qq -y'
     log 'Full upgrade completed successfully.'
 }
 
 install_software() {
     log 'Starting installation of required software packages...'
-    run_command 'sudo apt install -y apt-transport-https curl software-properties-common git-all autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts openssh-tests python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
+    run_command 'sudo apt install -qq -y apt-transport-https aptitude aptitude-doc-en curl software-properties-common git git-doc autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
     log 'Software installation completed successfully.'
 }
 
@@ -192,7 +194,7 @@ configure_userenv() {
 
 remove_rhythmbox() {
     log 'Starting removal of Rhythmbox and Aisleriot...'
-    run_command 'sudo apt purge -y rhythmbox* aisleriot'
+    run_command 'sudo apt purge -qq -y rhythmbox* aisleriot'
     log 'Rhythmbox and Aisleriot removal completed successfully.'
 }
 
@@ -214,8 +216,8 @@ install_gh() {
         run_command 'curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list'
-        run_command 'sudo apt update'
-        run_command 'sudo apt install gh -y'
+        run_command 'sudo apt update -qq'
+        run_command 'sudo apt install -qq -y gh'
         log 'GitHub CLI installation completed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: GitHub CLI is already installed. Skipping installation.${NC}\n"
@@ -227,12 +229,12 @@ install_pwsh() {
     log 'Starting installation of PowerShell...'
     if [[ ! $(command -v pwsh) ]]; then
         run_command 'source /etc/os-release'
-        run_command 'sudo apt update'
+        run_command 'sudo apt update -qq'
         run_command 'wget -q "https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb"'
         run_command 'sudo dpkg -i packages-microsoft-prod.deb'
-        run_command 'sudo apt update'
+        run_command 'sudo apt update -qq'
         run_command 'rm -v packages-microsoft-prod.deb'
-        run_command 'sudo apt install -y powershell'
+        run_command 'sudo apt install -qq -y powershell'
         run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
         download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
         log 'PowerShell installation completed successfully.'
@@ -246,7 +248,7 @@ remove_nano() {
     log 'Checking if nano is installed...'
     if [[ $(command -v nano) ]]; then
         log 'Nano is installed. Removing nano...'
-        run_command 'sudo apt purge -y nano'
+        run_command 'sudo apt purge -qq -y nano'
         log 'Nano removed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: Nano is not installed. Skipping removal.${NC}\n"
@@ -290,7 +292,7 @@ get_latest_nano_version() {
         sed -E "s/^refs\/tags\/v//; s/\^\{\}$//")
 
     if [[ -z "$nano_version" ]]; then
-        nano_version="8.4"
+        nano_version="8.7"
         log "Git command failed, falling back to version $nano_version" >/dev/null
     fi
 

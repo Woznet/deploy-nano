@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 if [[ ! $(which az) ]]; then
-    sudo apt update
-    sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+    sudo apt update -qq
+    sudo apt install -qq -y apt-transport-https ca-certificates curl gnupg lsb-release
 
     sudo mkdir -p /etc/apt/keyrings
     curl -sLS https://packages.microsoft.com/keys/microsoft.asc |
@@ -17,7 +17,7 @@ Components: main
 Architectures: $(dpkg --print-architecture)
 Signed-by: /etc/apt/keyrings/microsoft.gpg" | sudo tee /etc/apt/sources.list.d/azure-cli.sources
 
-    sudo apt update
-    sudo apt install -y azure-cli
+    sudo apt update -qq
+    sudo apt install -qq -y azure-cli
 
 fi
