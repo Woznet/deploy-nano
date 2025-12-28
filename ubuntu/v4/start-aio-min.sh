@@ -70,6 +70,7 @@ error_exit() {
 }
 
 run_command() {
+    export DEBIAN_FRONTEND=noninteractive
     if [[ $# -eq 1 ]]; then
         local cmd="$1"
         log "Running command (string): $cmd"
@@ -143,19 +144,19 @@ set_timezone() {
 
 check_updates() {
     log 'Starting software update...'
-    run_command 'sudo apt update -qq'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
     log 'Software update completed successfully.'
 }
 
 install_updates() {
     log 'Starting full upgrade...'
-    run_command 'sudo apt full-upgrade -qq -y'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -qq -y'
     log 'Full upgrade completed successfully.'
 }
 
 install_software() {
     log 'Starting installation of required software packages...'
-    run_command 'sudo apt install -qq -y apt-transport-https aptitude aptitude-doc-en curl software-properties-common git autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y apt-transport-https aptitude aptitude-doc-en curl software-properties-common git autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
     log 'Software installation completed successfully.'
 }
 
@@ -194,7 +195,7 @@ configure_userenv() {
 
 remove_rhythmbox() {
     log 'Starting removal of Rhythmbox and Aisleriot...'
-    run_command 'sudo apt purge -qq -y rhythmbox* aisleriot'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y rhythmbox* aisleriot'
     log 'Rhythmbox and Aisleriot removal completed successfully.'
 }
 
@@ -216,8 +217,8 @@ install_gh() {
         run_command 'curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list'
-        run_command 'sudo apt update -qq'
-        run_command 'sudo apt install -qq -y gh'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y gh'
         log 'GitHub CLI installation completed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: GitHub CLI is already installed. Skipping installation.${NC}\n"
@@ -232,9 +233,9 @@ install_pwsh() {
         run_command 'sudo apt update -qq'
         run_command 'wget -q "https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb"'
         run_command 'sudo dpkg -i packages-microsoft-prod.deb'
-        run_command 'sudo apt update -qq'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
         run_command 'rm -v packages-microsoft-prod.deb'
-        run_command 'sudo apt install -qq -y powershell'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y powershell'
         run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
         download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
         log 'PowerShell installation completed successfully.'
@@ -248,7 +249,7 @@ remove_nano() {
     log 'Checking if nano is installed...'
     if [[ $(command -v nano) ]]; then
         log 'Nano is installed. Removing nano...'
-        run_command 'sudo apt purge -qq -y nano'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y nano'
         log 'Nano removed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: Nano is not installed. Skipping removal.${NC}\n"
