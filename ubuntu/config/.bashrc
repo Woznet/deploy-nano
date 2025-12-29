@@ -104,13 +104,9 @@ if ! shopt -oq posix; then
 fi
 
 #-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#
-
-##########################################################################
 ##########################################################################
 ## Custom Config Below
 ##########################################################################
-##########################################################################
-
 #-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#-+-#
 
 #-+-#-+-#-+-#-+-#
@@ -130,11 +126,14 @@ if [[ $(which most) ]]; then
   export PAGER="most"
 fi
 
+#-+-#-+-#-+-#-+-#
+
 ### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
 # export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
 for d in "$HOME/.local/bin" "$HOME/bin"; do [[ -d "$d" ]] && PATH="$PATH:$d"; done
 export PATH
 
+#-+-#-+-#-+-#-+-#
 
 if [[ -d "$HOME/.nvm" ]]; then
   export NVM_DIR="$HOME/.nvm"
@@ -158,6 +157,8 @@ for npm_path in $(which -a npm | grep -v '^/mnt/c/Program Files/nodejs/' | uniq)
   fi
 done
 
+#-+-#-+-#-+-#-+-#
+
 ## gh bash completion
 if [[ $(which gh) ]]; then
   source <(gh completion --shell bash)
@@ -174,10 +175,6 @@ fi
 if [[ $(which pip) ]]; then
   source <(pip completion --bash)
 fi
-
-# mountpoint -q /mnt/u || sudo mount -t drvfs U: /mnt/u -o uid=$(id -u),gid=$(id -g)
-# mountpoint -q /mnt/v || sudo mount -t drvfs V: /mnt/v -o uid=$(id -u),gid=$(id -g)
-#-+-#-+-#-+-#-+-#
 
 #-+-#-+-#-+-#-+-#
 
