@@ -8,7 +8,7 @@
 
 ### V4 - Run start-aio-min.sh - [start-aio-min.sh][11]
 ```sh
-curl -o- https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio-min.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Woznet/deploy-nano/main/ubuntu/v4/start-aio-min.sh | bash
 ```
 
 ---
