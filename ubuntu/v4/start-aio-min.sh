@@ -39,9 +39,9 @@ done
 
 LOGFILE="$HOME/temp/deploy-config_$(date +%Y%m%d_%H%M%S).log"
 
-mkdir --parents "$(dirname "$LOGFILE")"
-touch "$LOGFILE"
-chmod 0644 "$LOGFILE"
+mkdir --parents "$(dirname "$LOGFILE")" > /dev/null
+touch "$LOGFILE" > /dev/null
+chmod 0644 "$LOGFILE" > /dev/null
 
 error_handler() {
     local exit_status=$?
@@ -144,19 +144,19 @@ set_timezone() {
 
 check_updates() {
     log 'Starting software update...'
-    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq > /dev/null'
     log 'Software update completed successfully.'
 }
 
 install_updates() {
     log 'Starting full upgrade...'
-    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -qq -y'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -qq -y > /dev/null'
     log 'Full upgrade completed successfully.'
 }
 
 install_software() {
     log 'Starting installation of required software packages...'
-    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y apt-transport-https aptitude aptitude-doc-en curl software-properties-common git autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y apt-transport-https aptitude aptitude-doc-en curl software-properties-common git autopoint build-essential devhelp devhelp-common freetype2-doc g++-multilib gcc-multilib wget xdg-utils glibc-doc glibc-doc-reference glibc-source groff groff-base language-pack-en language-pack-en-base clang libasprintf-dev libbsd-dev libc++-dev libc6 libc6-dev libcairo2-dev libcairo2-doc libc-ares-dev python3-pip libc-dev libev-dev libgettextpo-dev libgirepository1.0-dev libglib2.0-doc libice-doc libmagic1 ca-certificates libmagic-dev libmagick++-dev libmagics++-dev libncurses5-dev libncurses-dev libncursesw5-dev python-is-python3 libsm-doc libx11-doc libxcb-doc libxext-doc libxml2-utils ncurses-doc pkg-config zlib1g-dev net-tools gpg ffmpeg ffmpeg-doc most openssh-client openssh-known-hosts python3 python3-doc p7zip p7zip-full p7zip-rar policykit-1 policykit-1-doc policykit-1-gnome policykit-desktop-privileges rclone unzip zip unrar-free > /dev/null'
     log 'Software installation completed successfully.'
 }
 
@@ -180,14 +180,16 @@ configure_userenv() {
     run_command 'sudo cp --force ~/.bashrc /root/.bashrc'
     run_command 'sudo ln --force ~/.bash_aliases /root/.bash_aliases'
 
-    log 'Configuring sudoers and inputrc...'
+    log 'Configuring sudoers,inputrc and needrestart.conf...'
     download_file "$SUDOERS_URL" '/etc/sudoers.d/woz'
     download_file "$INPUTRC_URL" '/etc/inputrc'
     download_file "$DISABLE_IPV6_URL" '/etc/sysctl.d/20-disable-ipv6.conf'
+    run_command 'sudo sed -i.bak "s/^#[[:space:]]*\\$nrconf{verbosity}[[:space:]]*=[[:space:]]*2;$/\\$nrconf{verbosity} = 0;/" /etc/needrestart/needrestart.conf'
+
 
     log 'Creating user directories...'
     for dir in "$HOME/git" "$HOME/temp" "$HOME/dev"; do
-        [ -d "$dir" ] || run_command "mkdir -v '$dir'"
+        [ -d "$dir" ] || run_command "mkdir '$dir'"
     done
 
     log 'User environment configuration setup completed successfully.'
@@ -195,7 +197,7 @@ configure_userenv() {
 
 remove_rhythmbox() {
     log 'Starting removal of Rhythmbox and Aisleriot...'
-    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y rhythmbox* aisleriot'
+    run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y rhythmbox* aisleriot > /dev/null'
     log 'Rhythmbox and Aisleriot removal completed successfully.'
 }
 
@@ -206,7 +208,7 @@ generate_ssh_keys() {
         run_command 'ssh-keygen -t rsa -b 4096 -C "$(id --name --user)@$(hostname --fqdn)" -N "" -f ~/.ssh/id_rsa'
         log 'SSH key generated successfully.'
     else
-        echo -e "${ORANGE_RED}Warning: SSH key already exists. Skipping key generation.${NC}\n"
+        # echo -e "${ORANGE_RED}Warning: SSH key already exists. Skipping key generation.${NC}\n"
         log 'SSH key already exists.'
     fi
 }
@@ -217,8 +219,8 @@ install_gh() {
         run_command 'curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg'
         run_command 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list'
-        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
-        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y gh'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq > /dev/null'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y gh > /dev/null'
         log 'GitHub CLI installation completed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: GitHub CLI is already installed. Skipping installation.${NC}\n"
@@ -230,13 +232,13 @@ install_pwsh() {
     log 'Starting installation of PowerShell...'
     if [[ ! $(command -v pwsh) ]]; then
         run_command 'source /etc/os-release'
-        run_command 'sudo apt update -qq'
+        run_command 'sudo apt update -qq > /dev/null'
         run_command 'wget -q "https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb"'
-        run_command 'sudo dpkg -i packages-microsoft-prod.deb'
-        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq'
-        run_command 'rm -v packages-microsoft-prod.deb'
-        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y powershell'
-        run_command "sudo pwsh -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
+        run_command 'sudo dpkg -i packages-microsoft-prod.deb > /dev/null'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt update -qq > /dev/null'
+        run_command 'rm packages-microsoft-prod.deb > /dev/null'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt install -qq -y powershell > /dev/null'
+        run_command "sudo pwsh -WindowStyle Hidden -NoProfile -Command \"Invoke-Expression ([System.Net.WebClient]::new().DownloadString('$PWSH_CONFIG_URL'))\""
         download_file "$PWSH_PROFILE_URL" '/opt/microsoft/powershell/7/profile.ps1'
         log 'PowerShell installation completed successfully.'
     else
@@ -249,7 +251,7 @@ remove_nano() {
     log 'Checking if nano is installed...'
     if [[ $(command -v nano) ]]; then
         log 'Nano is installed. Removing nano...'
-        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y nano'
+        run_command 'sudo DEBIAN_FRONTEND=noninteractive apt purge -qq -y nano > /dev/null'
         log 'Nano removed successfully.'
     else
         echo -e "${ORANGE_RED}Warning: Nano is not installed. Skipping removal.${NC}\n"
@@ -259,8 +261,8 @@ remove_nano() {
 
 clone_nano_syntax() {
     log 'Cloning nano syntax highlighting repository...'
-    run_command "sudo rm --recursive --force \"$HOME/git/nano-syntax-highlighting\""
-    run_command "git clone \"$NANO_SYNTAX_REPO\" \"$HOME/git/nano-syntax-highlighting\""
+    run_command "sudo rm --recursive --force \"$HOME/git/nano-syntax-highlighting\" > /dev/null"
+    run_command "git clone \"$NANO_SYNTAX_REPO\" \"$HOME/git/nano-syntax-highlighting\" > /dev/null"
     readlink -f "$HOME/git/nano-syntax-highlighting" >"$NANO_SYNTAX_TEMP_PATH"
     log 'Cloned nano syntax highlighting repository successfully.'
 }
@@ -304,9 +306,9 @@ get_latest_nano_version() {
 download_nano() {
     log 'Downloading nano source...'
     cd "$HOME/temp"
-    run_command 'sudo rm --recursive --force ./nano-*'
-    run_command 'wget "${NANO_SOURCE_URL}"'
-    run_command 'tar xfz "nano-${NANO_LATEST_VERSION}.tar.gz"'
+    run_command 'sudo rm --recursive --force ./nano-* > /dev/null'
+    run_command 'wget -q "${NANO_SOURCE_URL}"'
+    run_command 'tar xfz "nano-${NANO_LATEST_VERSION}.tar.gz" > /dev/null'
     readlink -f $(printf 'nano-%s' "$NANO_LATEST_VERSION") >"$NANO_BUILD_TEMP_PATH"
     log 'Downloaded and extracted nano source successfully.'
 }
@@ -314,10 +316,10 @@ download_nano() {
 build_nano() {
     log 'Configuring and building nano...'
     cd "$(cat "$NANO_BUILD_TEMP_PATH")"
-    run_command "sudo ./configure --prefix=/usr --sysconfdir=/etc --enable-utf8 --enable-color --enable-extra --enable-nanorc --enable-multibuffer --docdir=/usr/share/doc/nano-${NANO_LATEST_VERSION}"
-    run_command 'sudo make'
-    run_command 'sudo make install'
-    run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-${NANO_LATEST_VERSION}"
+    run_command "sudo ./configure --prefix=/usr --sysconfdir=/etc --enable-utf8 --enable-color --enable-extra --enable-nanorc --enable-multibuffer --docdir=/usr/share/doc/nano-${NANO_LATEST_VERSION} > /dev/null"
+    run_command 'sudo make > /dev/null'
+    run_command 'sudo make install > /dev/null'
+    run_command "sudo install -v -m644 doc/{nano.html,sample.nanorc} /usr/share/doc/nano-${NANO_LATEST_VERSION} > /dev/null"
     log 'Configured, built and installed nano successfully.'
 }
 
@@ -349,9 +351,9 @@ configure_nano() {
         run_command 'sudo cp /etc/nanorc /etc/nanorc.bak'
     fi
     run_command "curl --silent $NANORC_URL | sudo tee /etc/nanorc >/dev/null"
-    run_command "sudo mv --force \"$(cat "$NANO_SYNTAX_TEMP_PATH")\"/*.nanorc /usr/share/nano/"
-    run_command 'sudo chmod --changes =644 /usr/share/nano/*.nanorc'
-    run_command 'sudo chown --changes --recursive root:root /usr/share/nano/'
+    run_command "sudo mv --force \"$(cat "$NANO_SYNTAX_TEMP_PATH")\"/*.nanorc /usr/share/nano/ > /dev/null"
+    run_command 'sudo chmod --changes =644 /usr/share/nano/*.nanorc > /dev/null'
+    run_command 'sudo chown --changes --recursive root:root /usr/share/nano/ > /dev/null'
     log 'Nano configured successfully.'
 }
 
@@ -364,7 +366,7 @@ set_default_editor() {
 
 remove_tmpfiles() {
     log 'Deleting temporary files in /tmp directory...'
-    run_command "sudo rm -f '$NANO_SYNTAX_TEMP_PATH' '$NANO_BUILD_TEMP_PATH'"
+    run_command "sudo rm -f '$NANO_SYNTAX_TEMP_PATH' '$NANO_BUILD_TEMP_PATH' > /dev/null"
     log 'Temporary files deleted successfully.'
 }
 
