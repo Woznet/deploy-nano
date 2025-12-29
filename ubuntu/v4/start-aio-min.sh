@@ -184,7 +184,8 @@ configure_userenv() {
     download_file "$SUDOERS_URL" '/etc/sudoers.d/woz'
     download_file "$INPUTRC_URL" '/etc/inputrc'
     download_file "$DISABLE_IPV6_URL" '/etc/sysctl.d/20-disable-ipv6.conf'
-    run_command 'sudo sed -i.bak "s/^#[[:space:]]*\\$nrconf{verbosity}[[:space:]]*=[[:space:]]*2;$/\\$nrconf{verbosity} = 0;/" /etc/needrestart/needrestart.conf'
+    run_command sudo sed -i.bak -e 's/^#[[:space:]]*\$nrconf{verbosity}[[:space:]]*=[[:space:]]*2;$/\$nrconf{verbosity} = 0;/' /etc/needrestart/needrestart.conf
+    # sudo sed -i.bak 's/^#[[:space:]]*\$nrconf{verbosity}[[:space:]]*=[[:space:]]*2;$/\$nrconf{verbosity} = 0;/' file.conf
 
 
     log 'Creating user directories...'
