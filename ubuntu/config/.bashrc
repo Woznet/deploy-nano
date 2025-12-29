@@ -131,7 +131,10 @@ if [[ $(which most) ]]; then
 fi
 
 ### Add ~/.local/bin and ~/bin to PATH for pip/python and dev
-export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
+# export PATH="$PATH:$HOME/.local/bin:$HOME/bin"
+for d in "$HOME/.local/bin" "$HOME/bin"; do [[ -d "$d" ]] && PATH="$PATH:$d"; done
+export PATH
+
 
 if [[ -d "$HOME/.nvm" ]]; then
   export NVM_DIR="$HOME/.nvm"
