@@ -98,7 +98,7 @@ download_file() {
         use_sudo=""
     fi
     # Download file and handle errors
-    if ! curl --silent --fail "$url" | $use_sudo tee "$dest" >/dev/null; then
+    if ! curl -fsSL "$url" | $use_sudo tee "$dest" >/dev/null; then
         echo -e "${ORANGE_RED}Failed to download $url to $dest${NC}\n"
         log_error "Failed to download $url"
         error_exit
@@ -121,7 +121,7 @@ download_file() {
 source_external_script() {
     local url="$1"
     local tmp_file="/tmp/temp_script.sh"
-    if ! curl --silent --fail "$url" -o "$tmp_file"; then
+    if ! curl -fsSL "$url" -o "$tmp_file"; then
         echo -e "${ORANGE_RED}Failed to download script from $url${NC}\n"
         log_error "Failed to download script from $url"
         exit 1
@@ -350,7 +350,7 @@ configure_nano() {
     if [[ -f "/etc/nanorc" ]]; then
         run_command 'sudo cp /etc/nanorc /etc/nanorc.bak'
     fi
-    run_command "curl --silent $NANORC_URL | sudo tee /etc/nanorc >/dev/null"
+    run_command "curl -fsSL $NANORC_URL | sudo tee /etc/nanorc >/dev/null"
     run_command "sudo mv --force \"$(cat "$NANO_SYNTAX_TEMP_PATH")\"/*.nanorc /usr/share/nano/ > /dev/null"
     run_command 'sudo chmod --changes =644 /usr/share/nano/*.nanorc > /dev/null'
     run_command 'sudo chown --changes --recursive root:root /usr/share/nano/ > /dev/null'
@@ -489,7 +489,7 @@ for key in "${!url_completions[@]}"; do
     output_file="${completions_target_dir}/${key}_completion"
 
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] Downloading URL completion for key: $key from $value" | tee -a "$error_log"
-    if ! sudo curl -s "$value" -o "$output_file"; then
+    if ! sudo curl -fsSL "$value" -o "$output_file"; then
         error_msg="[$key] Failed to download completion script from $value"
         echo -e "${ORANGE_RED}${error_msg}${NC}"
         echo "[$(date)] $error_msg" >>"$error_log"
